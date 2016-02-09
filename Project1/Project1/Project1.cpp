@@ -1,39 +1,36 @@
 #include <iostream>
 using namespace std;
 
+/* Encapsulates a URL string*/
 class webAddressInfo
 {
 private:
-	char url[201]; //allow a maximum of 200 characters
-	// other private methods if necessary for this class
+	char url[201];									// allow a maximum of 200 characters
 public:
-	webAddressInfo();
-	webAddressInfo(char* inputString);
-	void setWebAddressInfo(char* inputString);
-	char* getWebAddressInfo();
-	void display();
-	// and other public methods if necessary
+	webAddressInfo();								// empty constructor; automatically called by statically defined variable in browserTab class
+	webAddressInfo(char* inputString);				// never called in project, due to the fact all URLs are statically instantiated
+	void setWebAddressInfo(char* inputString);		// reads in the input string to url, the extraneous space is already filled with string terminators
+	char* getWebAddressInfo();						// returns a pointer to the first element of url
+	void display();									// displays full url to the console, stops on string terminator
 };
 
+/* Contains up to twenty url objects; allows output and transitions between urls*/
 class browserTab {
 protected:
-	int numAddress; //Current number of web addresses in this tab
-	webAddressInfo webAddresses[20]; //Web addresses in this tab
-	int currentAddress; //index of current location in webAddresses
-						// other private methods if necessary for this class
+	int numAddress;									// Current number of web addresses in this tab
+	webAddressInfo webAddresses[20];				// Web addresses in this tab
+	int currentAddress;								// index of current location in webAddresses
 public:
-	browserTab();
-	browserTab(char* inputString); //creates a new tab with the inputString
-	webAddressInfo& forward();
-	webAddressInfo& backward();
-	void addAddress(char* inputString);
-	void display();
-	// and other public methods if necessary
+	browserTab();									// empty constructor; automatically called by statically defined variable in main class
+	browserTab(char* inputString);					// creates a new tab with the inputString; never called in project due to static instantiation
+	webAddressInfo& forward();						// returns the 'box' for either the the next url, or the current one if on most recent url
+	webAddressInfo& backward();						// returns the 'box' for either the previous url, or the current one if on least recent url
+	void addAddress(char* inputString);				// creates url (webAddressInfo), sets current index to numAddress - 1, becuase numAddress size is not zero-indexed, prints url
+	void display();									// displays each webAddressInfo url in the browserTab
 };
 
 #pragma region webAddressInfo
 webAddressInfo::webAddressInfo() {
-
 }
 
 webAddressInfo::webAddressInfo(char* inputString) {
@@ -51,7 +48,8 @@ char* webAddressInfo::getWebAddressInfo() {
 }
 
 void webAddressInfo::display() {
-	for (int i = 0; url[i] != '\0'; ++i) {
+	// terminates when the value of url at the index is either string terminator, or max size of url array
+	for (int i = 0; url[i] != '\0' && i < 201; ++i) {
 		cout << url[i];
 	}
 	cout << endl;
@@ -76,8 +74,8 @@ webAddressInfo& browserTab::forward() {
 		return webAddresses[currentAddress];
 	}
 	else {
-		cout << "Already on most current tab; printing: ";
-		currentAddress = numAddress - 1;
+		cout << "Already on most current tab; printing - ";
+		currentAddress = numAddress - 1;			// in case current address index is somehow greater than or equal to numAddress index
 	}
 	return webAddresses[currentAddress];
 }
@@ -88,15 +86,15 @@ webAddressInfo& browserTab::backward() {
 		return webAddresses[currentAddress];
 	}
 	else {
-		cout << "Already moved back as far as possible; printing: ";
-		currentAddress = 0;
+		cout << "Already moved back as far as possible; printing - ";
+		currentAddress = 0;							// in case current address index is somehow less than zero
 	}
 	return webAddresses[currentAddress];
 }
 
 void browserTab::addAddress(char* inputString) {
 	++numAddress;
-	currentAddress = numAddress - 1;
+	currentAddress = numAddress - 1;				// sets currentAddress to most recently added address
 	webAddresses[currentAddress].setWebAddressInfo(inputString);
 	webAddresses[currentAddress].display();
 }
@@ -108,6 +106,7 @@ void browserTab::display() {
 }
 #pragma endregion Methods
 
+// sets each character in a string for a given length to string terminators
 void strEmpty(char* someString, int length) {
 	for (int i = 0; i < length; ++i) {
 		someString[i] = '\0';
@@ -116,16 +115,17 @@ void strEmpty(char* someString, int length) {
 
 int main()
 {
-	char command;
-	char blank;
-	char aChar;
-	char webAddress[201];
-	browserTab myTabs[20];
-	int tabNumber;
-	int i;
+	char command;									// the given command, e.g. New tab, forward, backward, or print
+	char blank;										// offload variable, junk
+	char aChar;										// reads in url to char, for safety
+	char webAddress[201];							// the web address to be wrapped into object
+	browserTab myTabs[20];							// statically creates 20 tabs, which statically creates 400 webAddressInfo objects
+	int tabNumber;									// the browserTab object to manipulate
+	int i;											// loop variable
+
 
 	// other local variables used to store data temporally
-	while (cin >> tabNumber) // while end of line is not reached
+	while (cin >> tabNumber)						// while end of line is not reached
 	{
 		cin.get(blank);
 		cin.get(command);
@@ -166,8 +166,6 @@ int main()
 		}
 
 		}
-
 	}
-
 	return 0;
 }
