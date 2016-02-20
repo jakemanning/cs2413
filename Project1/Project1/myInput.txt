@@ -1,0 +1,16 @@
+1 N http://www.msn.com/?ocid=iehp
+1 N http://www.microsoftstore.com/store/msusa/en_US/home
+1 B
+1 F
+1 P
+3 N https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001
+1 N http://www.cnn.com/2016/01/24/us/weather-winter-snowstorm/index.html
+1 P
+1 B
+1 B
+1 P
+2 N http://www.cnn.com/2016/01/24/us/weather-winter-snowstorm/index.html
+2 N http://www.sas.com/en_us/software/university-edition.html
+2 B
+2 F
+2 P

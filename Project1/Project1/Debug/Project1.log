@@ -1,0 +1,13 @@
+﻿  Project1.cpp
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(21): error C2664: 'webAddressInfo::webAddressInfo(webAddressInfo &&)': cannot convert argument 1 from 'webAddressInfo *' to 'char *'
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(21): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(74): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(80): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(86): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(92): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(98): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(98): error C2228: left of '.setWebAddressInfo' must have class/struct/union
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(99): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(99): error C2228: left of '.display' must have class/struct/union
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(104): error C2676: binary '[': 'webAddressInfo' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project1\project1\project1.cpp(104): error C2228: left of '.display' must have class/struct/union
