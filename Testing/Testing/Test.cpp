@@ -246,10 +246,19 @@ void Vector<DataType>::remove(int index) {
 
 #pragma endregion Classes
 
+class Testing {
+private:
+	Vector<char> url;
+public:
+	Testing();
+};
+
+Testing::Testing() {
+
+}
 int main() {
 	try {
-		Vector<int> v;
-		v.add(10);
+		Vector<int> test(201);
 		/*cout << v << ",cap " << v.capacity() << endl;
 		for (int i = 0; i < 5; ++i) {
 			v.add(5 * i);

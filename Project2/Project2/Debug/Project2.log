@@ -1,2 +1,24 @@
 ﻿  Project2.cpp
-  Project2.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project2\Debug\Project2.exe
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(61): warning C4250: 'Vector<char>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              DataType=char
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(29): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=char
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(279): note: see reference to class template instantiation 'Vector<char>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(61): warning C4250: 'Vector<browserTab>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              DataType=browserTab
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(29): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=browserTab
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(370): note: see reference to class template instantiation 'Vector<browserTab>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(293): error C4700: uninitialized local variable 'c' used
