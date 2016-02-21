@@ -24,10 +24,10 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\proje
           [
               DataType=webAddressInfo
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(340): note: see reference to class template instantiation 'Vector<webAddressInfo>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(342): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(393): warning C4101: 'e': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(400): warning C4101: 'bounds': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(341): note: see reference to class template instantiation 'Vector<webAddressInfo>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(343): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(394): warning C4101: 'e': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(401): warning C4101: 'bounds': unreferenced local variable
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(61): warning C4250: 'Vector<browserTab>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
           with
           [
@@ -38,9 +38,10 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\proje
           [
               DataType=browserTab
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(427): note: see reference to class template instantiation 'Vector<browserTab>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(448): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(459): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(499): warning C4101: 'outOfBounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(519): warning C4101: 'bounds': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(428): note: see reference to class template instantiation 'Vector<browserTab>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(424): warning C4101: 'command': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(430): warning C4101: 'i': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(425): warning C4101: 'blank': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(426): warning C4101: 'aChar': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(429): warning C4101: 'tabNumber': unreferenced local variable
   Project2.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project2\Debug\Project2.exe
