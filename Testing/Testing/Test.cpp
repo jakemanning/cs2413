@@ -156,16 +156,13 @@ Vector<DataType>::Vector(const Vector<DataType>& v) : ArrayClass<DataType>(v) {
 	_incFactor = v.incFactor();
 }
 template <class DataType>
-Vector<DataType>::Vector(const ArrayClass<DataType>& ac) {
+Vector<DataType>::Vector(const ArrayClass<DataType>& ac) : ArrayClass<DataType>(ac) {
 	_currSize = ac.size();
 	_incFactor = (_currSize + 1) / 2;
 }
 template <class DataType>
 Vector<DataType>::~Vector() {
-	if (paObject != NULL) { delete[] paObject; }
-	paObject = NULL;
 	_currSize = 0;
-	_size = 0;
 	setIncFactor(5);
 }
 template <class DataType>
@@ -252,7 +249,8 @@ void Vector<DataType>::remove(int index) {
 int main() {
 	try {
 		Vector<int> v;
-		cout << v << ",cap " << v.capacity() << endl;
+		v.add(10);
+		/*cout << v << ",cap " << v.capacity() << endl;
 		for (int i = 0; i < 5; ++i) {
 			v.add(5 * i);
 			cout << v << ",cap " << v.capacity() << endl;
@@ -268,7 +266,7 @@ int main() {
 		for (int i = 4; i >= 0; --i) {
 			v.remove(i);
 			cout << v << ",cap " << v.capacity() << endl;
-		}
+		}*/
 	}
 	catch (ArrayBoundsException ab) {
 		cout << "OOPSY" << endl;

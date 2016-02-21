@@ -156,16 +156,13 @@ Vector<DataType>::Vector(const Vector<DataType>& v) : ArrayClass<DataType>(v) {
 	_incFactor = v.incFactor();
 }
 template <class DataType>
-Vector<DataType>::Vector(const ArrayClass<DataType>& ac) {
+Vector<DataType>::Vector(const ArrayClass<DataType>& ac) : ArrayClass<DataType>(ac) {
 	_currSize = ac.size();
 	_incFactor = (_currSize + 1) / 2;
 }
 template <class DataType>
 Vector<DataType>::~Vector() {
-	if (paObject != NULL) { delete[] paObject; }
-	paObject = NULL;
 	_currSize = 0;
-	_size = 0;
 	setIncFactor(5);
 }
 template <class DataType>
@@ -391,7 +388,6 @@ int main()
 			} while ((aChar != '\n') && (i < 201) && !cin.eof());
 			if (i > 0) {
 				cout << "Adding address to tab #" << tabNumber << endl;
-				myTabs[tabNumber - 1].addAddress(webAddress);
 			}
 			break; } 
 		case 'F': { // Forward
@@ -410,16 +406,40 @@ int main()
 			break; 
 		}
 		case 'M': {
-			cout << command << endl;
+			cin.get(blank);
+			char toTab;
+			cin.get(toTab);
+			cout << "Moving tab #" << tabNumber << " before tab #" << toTab << endl;
+			break;
 		}
 		case 'R': {
-			cout << command << endl;
+			cout << "Removing tab #" << tabNumber << endl;
+			break;
 		}
 		case 'C': {
-			cout << command << endl;
+			cin.get(blank);
+			i = 0;
+			do {
+				cin.get(aChar);
+				if (aChar != '\n') {
+					webAddress[i++] = aChar;
+				}
+			} while ((aChar != '\n') && (i < 201) && !cin.eof());
+			if (i > 0) {
+				cout << "Changing address in tab #" << tabNumber << endl;
+				// myTabs[tabNumber - 1].addAddress(webAddress);
+			}
+			break;
 		}
 		default: { // illegal action 
-			cout << command << endl;
+			cout << "Illegal Action" << endl;
+			i = 0;
+			do {
+				cin.get(aChar);
+				if (aChar != '\n') {
+					webAddress[i++] = aChar;
+				}
+			} while ((aChar != '\n') && !cin.eof());
 			break;
 		}
 
