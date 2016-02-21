@@ -2,6 +2,7 @@
 using namespace std;
 
 class Exception { };
+class IncorrectAction : public Exception { };
 class ArrayException : public Exception { };
 class ArrayMemoryException : public ArrayException { };
 class ArrayBoundsException : public ArrayException { };
@@ -92,7 +93,6 @@ template <class DataType>
 ArrayClass<DataType>::~ArrayClass() {
 	if (paObject != NULL) { delete[] paObject; }
 	paObject = NULL;
-	_size = 0;
 }
 template <class DataType>
 void ArrayClass<DataType>::copy(const ArrayClass<DataType>& ac) {
@@ -307,17 +307,25 @@ webAddressInfo::webAddressInfo(const webAddressInfo& info) {
 	}
 }
 webAddressInfo::~webAddressInfo() {
-	delete url;
+	if (url != NULL) {}
 }
 void webAddressInfo::setWebAddressInfo(const Vector<char>& newUrl) {
-
+	try {
+		if (url != NULL) {
+			*url = newUrl;
+		}
+	}
+	catch (ArrayMemoryException memory) {
+		cout << "You've lost your marbles!" << endl;
+	}
 }
 Vector<char>& webAddressInfo::getWebAddressInfo() {
 	return *url;
 }
+/*
 void webAddressInfo::display() {
 
-}
+}*/
 void webAddressInfo::operator=(const webAddressInfo info) {
 	try {
 		url = info.url;
@@ -327,10 +335,14 @@ void webAddressInfo::operator=(const webAddressInfo info) {
 	}
 }
 ostream& operator<< (ostream& s, webAddressInfo& info) {
-	for (int i = 0; i < info.getWebAddressInfo().size(); ++i) {
-		s << info.getWebAddressInfo()[i];
+	try {
+		for (int i = 0; i < info.getWebAddressInfo().size(); ++i) {
+			s << info.getWebAddressInfo()[i];
+		}
 	}
-	
+	catch (ArrayBoundsException bounds) {
+		s << "You've crossed a line";
+	}
 	return s;
 }
 #pragma endregion Methods
@@ -343,14 +355,19 @@ browserTab::browserTab() {
 	catch (ArrayMemoryException memory) {
 		cout << "Help, I need somebody" << endl;
 	}
-		numAddress = (*webAddresses).capacity();
-		currentAddress = (*webAddresses).size();
+	numAddress = (*webAddresses).capacity();
+	currentAddress = (*webAddresses).size();
 }
-browserTab::browserTab(const Vector<char>& inputString) {
-	webAddresses = new Vector<webAddressInfo>(20);
-	numAddress = 0;
-	currentAddress = 0;
-	addAddress(inputString);
+browserTab::browserTab(const Vector<char>& inputURL) {
+	try {
+		webAddresses = new Vector<webAddressInfo>(20);
+	}
+	catch (ArrayMemoryException memory) {
+		cout << "Now you've done it" << endl;
+	}
+	numAddress = 0; // default in case fails
+	currentAddress = 0; // default in case fails
+	addAddress(inputURL);
 }
 browserTab::browserTab(const browserTab& info) {
 	webAddresses = info.webAddresses;
@@ -384,29 +401,24 @@ browserTab::~browserTab() {
 //	//}
 //	//return webAddresses[currentAddress];
 //}
-void browserTab::addAddress(const Vector<char>& inputString) {
+void browserTab::addAddress(const Vector<char>& inputURL) {
 	try {
-	webAddressInfo info(inputString);
-	(*webAddresses).add(info);
-	numAddress = (*webAddresses).capacity();
-	currentAddress = (*webAddresses).size() - 1;
+		webAddressInfo *url = new webAddressInfo(inputURL);
+		(*webAddresses).add(*url);
+		numAddress = (*webAddresses).capacity();
+		currentAddress = (*webAddresses).size() - 1;
+
 	}
-	catch (Exception e) {
-		cout << "Ahhh" << endl;
-	}
-	try {
-		cout << currentAddress << endl;
-		cout << webAddresses[currentAddress] << endl;
-	}
-	catch (ArrayBoundsException bounds) {
-		cout << "I can't do this" << endl;
+	catch (ArrayException arrayException) {
+		cout << "I can't do this at all " << endl;
 	}
 }
+/*
 void browserTab::display() {
 
-}
+}*/
 ostream& operator<< (ostream& s, browserTab& info) {
-	s << info.webAddresses;
+	s << *info.webAddresses;
 	return s;
 }
 #pragma endregion Methods
@@ -416,7 +428,7 @@ void strEmpty(Vector<char>& str) {
 	for (int i = str.size() - 1; i >= 0; --i) {
 		str.remove(i);
 	}
-	
+
 }
 
 int main()
@@ -429,6 +441,7 @@ int main()
 	int tabNumber;									// the browserTab object to manipulate
 	int i;											// loop variable
 
+	/*
 	(*webAddress).add('a');
 	(*webAddress).add('a');
 	(*webAddress).add('a');
@@ -442,110 +455,122 @@ int main()
 	(*otherWebAddress).add('b');
 	(*otherWebAddress).add('b');
 
-	webAddressInfo *testing = new webAddressInfo((*webAddress));
-	webAddressInfo *otherTesting = new webAddressInfo((*testing));
-	
-	cout << (*otherTesting) << endl;
+	browserTab *tabTest = new browserTab(*webAddress);*/
 
-	//while (cin >> tabNumber)						// while end of line is not reached
-	//{
-	//	cin.get(blank);
-	//	cin.get(command);
-	//	strEmpty(*webAddress);
 
-	//	switch (command) {
-	//	case 'N': { // New url
-	//		cin.get(blank);
-	//		i = 0;
-	//		do {
-	//			cin.get(aChar);
-	//			if (aChar != '\n') {
-	//				try {
-	//					i = 1;
-	//					(*webAddress).add(aChar);
-	//				}
-	//				catch (ArrayBoundsException bounds) {
-	//					cout << "Pshhhh as if" << endl;
-	//				}
-	//			}
-	//		} while ((aChar != '\n') && !cin.eof());
-	//		if (i > 0) {
-	//			cout << "Adding address to tab #" << tabNumber << endl;
-	//			try {
-	//				/*browserTab *tab = new browserTab(webAddress);
-	//				myTabs.insert(*tab, tabNumber - 1);*/
-	//				
-	//			}
-	//			catch (ArrayBoundsException bounds) {
-	//				cout << "Uh...no" << endl;
-	//			}
-	//		}
-	//		break; }
-	//	case 'F': { // Forward
-	//		/*cout << "Attempting to move forwards in tab #" << tabNumber << " - ";
-	//		myTabs[tabNumber - 1].forward().display();*/
-	//		break;
-	//	}
-	//	case 'B': { // Backward
-	//		/*cout << "Attempting to move backwards in tab #" << tabNumber << " - ";
-	//		myTabs[tabNumber - 1].backward().display();*/
-	//		break;
-	//	}
-	//	case 'P': { // Print current
-	//		cout << "Printing contents of tab #" << tabNumber << endl;
-	//		//myTabs[tabNumber - 1].display();
-	//		break;
-	//	}
-	//	case 'M': {
-	//		cin.get(blank);
-	//		cin.get(aChar);
-	//		cout << "Moving tab #" << tabNumber << " before tab #" << aChar << endl;
-	//		break;
-	//	}
-	//	case 'R': {
-	//		cout << "Removing tab #" << tabNumber << endl;
-	//		break;
-	//	}
-	//	case 'C': {
-	//		cin.get(blank);
-	//		i = 0;
-	//		do {
-	//			cin.get(aChar);
-	//			if (aChar != '\n') {
-	//				try {
-	//					i = 1;
-	//					webAddress.add(aChar);
-	//				}
-	//				catch (ArrayBoundsException outOfBounds) {
-	//					cout << "You so sillyyy" << endl;
-	//				}
-	//			}
-	//		} while ((aChar != '\n') && !cin.eof());
-	//		if (i > 0) {
-	//			cout << "Changing the address in tab #" << tabNumber << endl;
-	//			// TODO: something
-	//		}
-	//		break;
-	//	}
-	//	default: { // illegal action 
-	//		cout << "Illegal Action" << endl;
-	//		i = 0;
-	//		do {
-	//			cin.get(aChar);
-	//			if (aChar != '\n') {
-	//				try {
-	//					webAddress.add(aChar);
-	//				}
-	//				catch (ArrayBoundsException bounds) {
-	//					cout << "Alohamora" << endl;
-	//				}
-	//			}
-	//		} while ((aChar != '\n') && !cin.eof());
-	//		break;
-	//	}
 
-	//	}
-	//}
-	
+	while (cin >> tabNumber)						// while end of line is not reached
+	{
+		cin.get(blank);
+		cin.get(command);
+		strEmpty(*webAddress);
+
+		try {
+			switch (command) {
+			case 'N': { // New url
+				cin.get(blank);
+				i = 0;
+				do {
+					cin.get(aChar);
+					if (aChar != '\n') {
+						try {
+							i = 1;
+							(*webAddress).add(aChar);
+						}
+						catch (ArrayBoundsException bounds) {
+							cout << "Pshhhh as if" << endl;
+						}
+					}
+				} while ((aChar != '\n') && !cin.eof());
+				if (i > 0) {
+					cout << "Adding address to tab #" << tabNumber;
+					try {
+						if (tabNumber - 1 == (*myTabs).size()) {
+							browserTab *tab = new browserTab(*webAddress);
+							(*myTabs).add(*tab);
+							cout << (*myTabs)[tabNumber - 1] << endl;
+						}
+						else if (tabNumber - 1 < (*myTabs).size()) {
+							(*myTabs)[tabNumber - 1].addAddress(*webAddress);
+							cout << (*myTabs)[tabNumber - 1] << endl;
+						}
+						else {
+							throw ArrayBoundsException();
+						}
+					}
+					catch (ArrayBoundsException bounds) {
+						cout << "Uh...no" << endl;
+					}
+				}
+				break; }
+			case 'F': { // Forward
+				cout << "Attempting to move forwards in tab #" << tabNumber << " - ";
+				/*myTabs[tabNumber - 1].forward().display();*/
+				break;
+			}
+			case 'B': { // Backward
+				cout << "Attempting to move backwards in tab #" << tabNumber << " - ";
+				/*myTabs[tabNumber - 1].backward().display();*/
+				break;
+			}
+			case 'P': { // Print current
+				cout << "Printing contents of tab #" << tabNumber << endl;
+				//myTabs[tabNumber - 1].display();
+				break;
+			}
+			case 'M': {
+				cin.get(blank);
+				cin.get(aChar);
+				cout << "Moving tab #" << tabNumber << " before tab #" << aChar << endl;
+				break;
+			}
+			case 'R': {
+				cout << "Removing tab #" << tabNumber << endl;
+				break;
+			}
+			case 'C': {
+				cin.get(blank);
+				i = 0;
+				do {
+					cin.get(aChar);
+					if (aChar != '\n') {
+						try {
+							i = 1;
+							(*webAddress).add(aChar);
+						}
+						catch (ArrayBoundsException outOfBounds) {
+							cout << "You so sillyyy" << endl;
+						}
+					}
+				} while ((aChar != '\n') && !cin.eof());
+				if (i > 0) {
+					cout << "Changing the current address in tab #" << tabNumber << endl;
+					// TODO: something
+				}
+				break;
+			}
+			default: { // illegal action 
+				i = 0;
+				do {
+					cin.get(aChar);
+					if (aChar != '\n') {
+						try {
+							(*webAddress).add(aChar);
+						}
+						catch (ArrayBoundsException bounds) {
+							cout << "Alohamora" << endl;
+						}
+					}
+				} while ((aChar != '\n') && !cin.eof());
+				throw IncorrectAction();
+				break;
+			}
+			}
+		}
+		catch (IncorrectAction incorrect) {
+			cout << "Illegal Action" << endl;
+		}
+	}
+
 	return 0;
 }
