@@ -10,10 +10,9 @@ class ArrayBoundsException : public ArrayException { };
 template <class DataType>
 class AbstractArrayClass {
 public:
-	virtual int size() const = 0;
-	virtual DataType& operator[] (int k) = 0;
+	virtual int size() const = NULL;
+	virtual DataType& operator[] (int k) = NULL;
 };
-
 template <class DataType>
 class ArrayClass : virtual public AbstractArrayClass<DataType> {
 protected:
@@ -24,21 +23,19 @@ public:
 	ArrayClass();
 	ArrayClass(int n);
 	ArrayClass(int n, const DataType& val);
-	ArrayClass(const ArrayClass<Datatype>& ac);
+	ArrayClass(const ArrayClass<DataType>& ac);
 	virtual ~ArrayClass();
 	virtual int size() const;
 	virtual DataType& operator [] (int k);
 	void operator=(const ArrayClass<DataType>& ac);
 };
-
 template <class DataType>
 class AbstractVector : virtual public AbstractArrayClass<DataType> {
 public:
-	virtual void insert(const DataType& item, int index) == 0; // insert a new object at position index in the vector
-	virtual void remove(int index) == 0; // removes the object at position index of the vector
-	virtual void add(const DataType& item) = 0; // adds item at end of the vector
+	virtual void insert(const DataType& item, int index) = NULL; // insert a new object at position index in the vector
+	virtual void remove(int index) = NULL; // removes the object at position index of the vector
+	virtual void add(const DataType& item) = NULL; // adds item at end of the vector
 };
-
 template <class DataType>
 class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> {
 protected:
@@ -59,10 +56,9 @@ public:
 	virtual int size() const; // similar to size method as it returns size of underlying array
 	virtual int capacity() const;
 	virtual int incFactor() const;
-	virtual int setIncFactor(int f);
+	virtual void setIncFactor(int f);
 	void setCapacity(int c);
 };
-
 #pragma region array
 template <class DataType>
 ArrayClass<DataType>::ArrayClass() {
@@ -71,7 +67,6 @@ ArrayClass<DataType>::ArrayClass() {
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = 1;
 }
-
 template <class DataType>
 ArrayClass<DataType>::ArrayClass(int n) {
 	_size = 0; // default in case allocation fails
@@ -95,12 +90,12 @@ ArrayClass<DataType>::ArrayClass(const ArrayClass<DataType>& ac) {
 }
 template <class DataType>
 ArrayClass<DataType>::~ArrayClass() {
-	if (paObject != null) { delete[] paObject; }
+	if (paObject != NULL) { delete[] paObject; }
 	paObject = NULL;
 	_size = 0;
 }
 template <class DataType>
-ArrayClass<DataType>::copy(const ArrayClass<DataType>& ac) {
+void ArrayClass<DataType>::copy(const ArrayClass<DataType>& ac) {
 	_size = 0; // default in case allocation fails
 	paObject = new DataType[ac._size];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
@@ -120,17 +115,18 @@ DataType& ArrayClass<DataType>::operator[] (int k) {
 }
 template <class DataType>
 void ArrayClass<DataType>::operator=(const ArrayClass<DataType>& ac) {
-	if (paObject != null) { delete[] paObject; } // the already existing array is deleted and copied in to the new array
+	if (paObject != NULL) { delete[] paObject; } // the already existing array is deleted and copied in to the new array
 	copy(ac);
 }
 template <class DataType>
-ostream& operator << <DataType>(ostream& s, AbstractArrayClass<DataType>& ac) {
+ostream& operator << (ostream& s, AbstractArrayClass<DataType>& ac) {
 	s << "[";
 	for (int i = 0; i < ac.size(); ++i) {
 		if (i > 0) {
 			s << ',';
 		}
 		s << ac[i];
+
 	}
 	s << "]";
 	return s;
@@ -163,6 +159,14 @@ template <class DataType>
 Vector<DataType>::Vector(const ArrayClass<DataType>& ac) {
 	_currSize = ac.size();
 	_incFactor = (_currSize + 1) / 2;
+}
+template <class DataType>
+Vector<DataType>::~Vector() {
+	if (paObject != NULL) { delete[] paObject; }
+	paObject = NULL;
+	_currSize = 0;
+	_size = 0;
+	setIncFactor(5);
 }
 template <class DataType>
 void Vector<DataType>::operator= (const Vector<DataType>& v) {
@@ -277,7 +281,6 @@ public:
 webAddressInfo::webAddressInfo() {
 
 }
-
 webAddressInfo::webAddressInfo(char* inputString) {
 	setWebAddressInfo(inputString);
 }
@@ -369,13 +372,13 @@ int main()
 	int i;											// loop variable
 
 
-													// other local variables used to store data temporally
+										// other local variables used to store data temporally
 	while (cin >> tabNumber)						// while end of line is not reached
 	{
 		cin.get(blank);
 		cin.get(command);
 		strEmpty(webAddress, 201);
-
+		
 		switch (command) {
 		case 'N': { // New url
 			cin.get(blank);
@@ -390,32 +393,33 @@ int main()
 				cout << "Adding address to tab #" << tabNumber << endl;
 				myTabs[tabNumber - 1].addAddress(webAddress);
 			}
-			break; }
+			break; } 
 		case 'F': { // Forward
 			cout << "Attempting to move forwards in tab #" << tabNumber << " - ";
 			myTabs[tabNumber - 1].forward().display();
-			break; }
+			break; 
+		}
 		case 'B': { // Backward
 			cout << "Attempting to move backwards in tab #" << tabNumber << " - ";
 			myTabs[tabNumber - 1].backward().display();
-			break;
+			break; 
 		}
 		case 'P': { // Print current
 			cout << "Printing contents of tab #" << tabNumber << endl;
 			myTabs[tabNumber - 1].display();
-			break;
+			break; 
 		}
 		case 'M': {
-
+			cout << command << endl;
 		}
 		case 'R': {
-
+			cout << command << endl;
 		}
 		case 'C': {
-
+			cout << command << endl;
 		}
 		default: { // illegal action 
-
+			cout << command << endl;
 			break;
 		}
 

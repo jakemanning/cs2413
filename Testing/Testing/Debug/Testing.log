@@ -1,2 +1,14 @@
 ﻿  Test.cpp
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\testing\testing\test.cpp(61): warning C4250: 'Vector<int>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              DataType=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\testing\testing\test.cpp(29): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\testing\testing\test.cpp(255): note: see reference to class template instantiation 'Vector<int>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\testing\testing\test.cpp(273): warning C4101: 'ab': unreferenced local variable
   Testing.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Testing\Debug\Testing.exe
