@@ -9,13 +9,13 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\proje
           [
               DataType=char
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(288): note: see reference to class template instantiation 'Vector<char>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(290): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(298): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(306): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(319): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(330): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(340): warning C4101: 'bounds': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(289): note: see reference to class template instantiation 'Vector<char>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(291): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(299): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(307): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(320): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(331): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(341): warning C4101: 'bounds': unreferenced local variable
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(62): warning C4250: 'Vector<webAddressInfo>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
           with
           [
@@ -26,10 +26,10 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\proje
           [
               DataType=webAddressInfo
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(350): note: see reference to class template instantiation 'Vector<webAddressInfo>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(354): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(365): warning C4101: 'memory': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(437): warning C4101: 'memory': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(351): note: see reference to class template instantiation 'Vector<webAddressInfo>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(355): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(366): warning C4101: 'memory': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(445): warning C4101: 'memory': unreferenced local variable
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(62): warning C4250: 'Vector<browserTab>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
           with
           [
@@ -40,14 +40,15 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\proje
           [
               DataType=browserTab
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(457): note: see reference to class template instantiation 'Vector<browserTab>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(479): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(498): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(513): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(530): warning C4101: 'arrayException': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(546): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(565): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(580): warning C4101: 'outOfBounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(599): warning C4101: 'bounds': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(609): warning C4101: 'incorrect': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(465): note: see reference to class template instantiation 'Vector<browserTab>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(487): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(506): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(521): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(538): warning C4101: 'arrayException': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(554): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(589): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(605): warning C4101: 'outOfBounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(620): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(635): warning C4101: 'bounds': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project2\project2\project2.cpp(645): warning C4101: 'incorrect': unreferenced local variable
   Project2.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project2\Debug\Project2.exe
