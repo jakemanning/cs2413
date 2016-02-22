@@ -279,6 +279,7 @@ public:
 	webAddressInfo& forward();						// returns the 'box' for either the the next url, or the current one if on most recent url
 	webAddressInfo& backward();						// returns the 'box' for either the previous url, or the current one if on least recent url
 	void addAddress(const Vector<char>& inputString);				// creates url (webAddressInfo), sets current index to numAddress - 1, becuase numAddress size is not zero-indexed, prints url
+	void changeCurrentAddress(const Vector<char>& newAddress);
 	void operator= (const browserTab& tab);
 };
 
@@ -419,9 +420,16 @@ webAddressInfo& browserTab::backward() {
 	}
 	return (*webAddresses)[currentAddress];
 }
+void browserTab::changeCurrentAddress(const Vector<char>& newAddress) {
+	webAddressInfo *newUrl = new webAddressInfo(newAddress);
+	cout << *newUrl;
+	(*webAddresses)[currentAddress] = (*newUrl);
+}
 void browserTab::addAddress(const Vector<char>& inputURL) {
 	webAddressInfo *url = new webAddressInfo(inputURL);
 	(*webAddresses).add(*url);
+	resetCurrentAddress();
+	getNumAddress();
 	cout << (*url) << endl;
 }
 ostream& operator<< (ostream& s, browserTab& info) {
@@ -551,19 +559,37 @@ int main()
 			case 'M': {
 				int otherTabNumber;
 				cin >> otherTabNumber;
-				cout << "Moving tab #" << tabNumber << " before tab #" << otherTabNumber << endl;
+				try {
+					cout << "Attempting to move tab #" << tabNumber << " before tab #" << otherTabNumber << " - ";
+					if (tabNumber > otherTabNumber) {
+						browserTab info = (*myTabs)[tabNumber];
+						(*myTabs).insert(info, otherTabNumber);
+					}
+					else {
+						cout << "Tab is already before other tab";
+					}
+				}
+				catch (ArrayException) {
+					cout << "Incorrect Access";
+				}
+				cout << endl;
 				break;
 			}
 			case 'R': {
-				cout << "Attempting to remove tab #" << tabNumber << endl;
+				cout << "Attempting to remove tab #" << tabNumber << " - ";
 				try {
 					if (tabNumber - 1 < (*myTabs).size()) {
+						cout << (*myTabs)[tabNumber - 1];
 						(*myTabs).remove(tabNumber - 1);
+					}
+					else {
+						throw ArrayBoundsException();
 					}
 				}
 				catch (ArrayBoundsException bounds) {
-					cout << "You're bounds" << endl;
+					cout << "You're out of bounds";
 				}
+				cout << endl;
 				break;
 			}
 			case 'C': {
@@ -582,8 +608,19 @@ int main()
 					}
 				} while ((aChar != '\n') && !cin.eof());
 				if (shouldTakeAction) {
-					cout << "Changing the current address in tab #" << tabNumber << endl;
-					// TODO: something
+					cout << "Changing the current address in tab #" << tabNumber << " - ";
+					try {
+						if (tabNumber - 1 < (*myTabs).size()) {
+							(*myTabs)[tabNumber - 1].changeCurrentAddress(*webAddress);
+						}
+						else {
+							throw ArrayBoundsException();
+						}
+					}
+					catch (ArrayBoundsException bounds) {
+						cout << "You're out of bounds";
+					}
+					cout << endl;
 				}
 				break;
 			}
