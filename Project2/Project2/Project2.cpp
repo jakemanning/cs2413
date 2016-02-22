@@ -1,64 +1,69 @@
 #include <iostream>
 using namespace std;
 
-class Exception { };
-class IncorrectAction : public Exception { };
-class ArrayException : public Exception { };
-class ArrayMemoryException : public ArrayException { };
-class ArrayBoundsException : public ArrayException { };
+class Exception { };							// Generic, all exceptions derive from this
+class IncorrectAction : public Exception { };				// In case the user asked for an action that won't work
+class ArrayException : public Exception { };				// Genric array exception, all array exceptions derive from
+class ArrayMemoryException : public ArrayException { };			// In case the array created causes an error
+class ArrayBoundsException : public ArrayException { };			// In case the user asked for an index that was out of bounds
 
 #pragma region array
+// Purely virtual data type from which arrays derive
 template <class DataType>
-class AbstractArrayClass {
+class AbstractArrayClass {						
 public:
-	virtual int size() const = 0;
-	virtual DataType& operator[] (int k) = 0;
+	virtual int size() const = 0;					// Abstract template for size
+	virtual DataType& operator[] (int k) = 0;			// Abstract template for array index overloading
 };
 template <class DataType>
-class ArrayClass : virtual public AbstractArrayClass<DataType> {
+class ArrayClass : virtual public AbstractArrayClass<DataType> {	// Encapsulation of a DataType array
 protected:
-	DataType *paObject;
-	int _size;
-	void copy(const ArrayClass<DataType>& ac);
+	DataType *paObject;						// Pointer to an array of DataType
+	int _size;							// Capacity of the array
+	void copy(const ArrayClass<DataType>& ac);			// Allows for a copy constructor to take data from an external ArrayClass
 public:
-	ArrayClass();
-	ArrayClass(int n);
-	ArrayClass(int n, const DataType& val);
-	ArrayClass(const ArrayClass<DataType>& ac);
-	virtual ~ArrayClass();
-	virtual int size() const;
-	virtual DataType& operator [] (int k);
-	void operator=(const ArrayClass<DataType>& ac);
+	ArrayClass();							// Default constructor, creates a array of size 1
+	ArrayClass(int n);						// Initializer, creates an array of size n
+	ArrayClass(int n, const DataType& val);				// Initializer, fills an array of size n with val
+	ArrayClass(const ArrayClass<DataType>& ac);			// Copy constructor, transfers data from an external ArrayClass, and copies data into self
+	virtual ~ArrayClass();						// Destructor
+	virtual int size() const;					// Encapsulated method to access capacity
+	virtual DataType& operator [] (int k);				// Overloads bracket operator to access data at index of k
+	void operator=(const ArrayClass<DataType>& ac);			// Overloads equals operator to copy information from the given ArrayClass
 };
+
+// Purely virtual vector template
 template <class DataType>
 class AbstractVector : virtual public AbstractArrayClass<DataType> {
 public:
-	virtual void insert(const DataType& item, int index) = 0; // insert a new object at position index in the vector
-	virtual void remove(int index) = 0; // removes the object at position index of the vector
-	virtual void add(const DataType& item) = 0; // adds item at end of the vector
+	virtual void insert(const DataType& item, int index) = 0; 	// Insert a new object at position index in the vector
+	virtual void remove(int index) = 0; 				// Removes the object at position index of the vector
+	virtual void add(const DataType& item) = 0; 			// Adds item at end of the vector
 };
+
+// Encapsulation of a DataType Vector, allows for dynamically sized array
 template <class DataType>
-class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> {
+class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> { 
 protected:
-	int _currSize;
-	int _incFactor;
+	int _currSize;							// Active size of the array	
+	int _incFactor;							// Index at which the size of the array will be doubled
 public:
-	Vector();
-	Vector(int n);
-	Vector(int n, DataType& val);
-	Vector(const Vector<DataType>& v);
-	Vector(const ArrayClass<DataType>& ac);
-	virtual ~Vector();
-	void operator= (const Vector<DataType>& v);
-	void operator= (const ArrayClass<DataType>& ac);
-	virtual void insert(const DataType& item, int index);
-	virtual void remove(int index);
-	virtual void add(const DataType& item);
-	virtual int size() const; // similar to size method as it returns size of underlying array
-	virtual int capacity() const;
-	virtual int incFactor() const;
-	virtual void setIncFactor(int f);
-	void setCapacity(int c);
+	Vector();							// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
+	Vector(int n);							// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(int n, DataType& val);					// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(const Vector<DataType>& v);				// Copy constructor, transfers data from an external Vector, and copies data into self
+	Vector(const ArrayClass<DataType>& ac);				// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
+	virtual ~Vector();						// Destructor
+	void operator= (const Vector<DataType>& v);			// Overloads equals operator to copy information from the given Vector
+	void operator= (const ArrayClass<DataType>& ac);		// Overloads equals operator to copy information from the given ArrayClass
+	virtual void insert(const DataType& item, int index);		// Shifts all items up to the current array from the given index, and inserts item into given index
+	virtual void remove(int index);					// Removes item at given index, shifts down other objects, and decrements active array size
+	virtual void add(const DataType& item);				// Appends an object to the underlying Array
+	virtual int size() const; 					// Returns size of underlying array
+	virtual int capacity() const;					// Returns capacity of underlying array
+	virtual int incFactor() const;					// Returns current increment factor
+	virtual void setIncFactor(int f);				// Resets the incedent factor to necessary size
+	void setCapacity(int c);					// Resizes underlying array to the specified capacity
 };
 #pragma region array
 template <class DataType>
@@ -70,14 +75,14 @@ ArrayClass<DataType>::ArrayClass() {
 }
 template <class DataType>
 ArrayClass<DataType>::ArrayClass(int n) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[n];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = n;
 }
 template <class DataType>
 ArrayClass<DataType>::ArrayClass(int n, const DataType& val) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[n];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = n;
@@ -96,7 +101,7 @@ ArrayClass<DataType>::~ArrayClass() {
 }
 template <class DataType>
 void ArrayClass<DataType>::copy(const ArrayClass<DataType>& ac) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[ac._size];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = ac._size;
@@ -115,7 +120,7 @@ DataType& ArrayClass<DataType>::operator[] (int k) {
 }
 template <class DataType>
 void ArrayClass<DataType>::operator=(const ArrayClass<DataType>& ac) {
-	if (paObject != NULL) { delete[] paObject; } // the already existing array is deleted and copied in to the new array
+	if (paObject != NULL) { delete[] paObject; } // Existing array is deleted and copied in to the new array
 	copy(ac);
 }
 template <class DataType>
@@ -136,19 +141,18 @@ ostream& operator << (ostream& s, AbstractArrayClass<DataType>& ac) {
 #pragma region Vector
 template <class DataType>
 Vector<DataType>::Vector() : ArrayClass<DataType>() {
-	// default values
-	_currSize = 0;
+	_currSize = 0; // Default values
 	_incFactor = 5;
 }
 template <class DataType>
 Vector<DataType>::Vector(int n) : ArrayClass<DataType>(n) {
 	_currSize = 0;
-	_incFactor = (n + 1) / 2; // arbitrary
+	_incFactor = (n + 1) / 2; // Arbitrary
 }
 template <class DataType>
 Vector<DataType>::Vector(int n, DataType& val) : ArrayClass<DataType>(n, val) {
 	_currSize = 0;
-	_incFactor = n / 2; // arbitrary
+	_incFactor = n / 2; // Arbitrary
 }
 template <class DataType>
 Vector<DataType>::Vector(const Vector<DataType>& v) : ArrayClass<DataType>(v) {
@@ -246,41 +250,41 @@ void Vector<DataType>::remove(int index) {
 
 #pragma endregion Classes
 
-/* Encapsulates a URL string*/
-class webAddressInfo
+// Encapsulation of a URL string
+class webAddressInfo 
 {
-	friend ostream& operator<< (ostream& s, webAddressInfo& info);
+	friend ostream& operator<< (ostream& s, webAddressInfo& info);	// Overloaded cstream operator, signified as friend so is able to access the info's url
 private:
-	Vector<char> *url;								// allow a maximum of 200 characters
+	Vector<char> *url;						// Stores the contents of a URL
 public:
-	webAddressInfo();								// empty constructor; automatically called by statically defined variable in browserTab class
-	webAddressInfo(const Vector<char>& info);				// never called in project, due to the fact all URLs are statically instantiated
-	webAddressInfo(const webAddressInfo& info);
+	webAddressInfo();						// Default constructor
+	webAddressInfo(const Vector<char>& info);			// Initializer constructor, copies contents of supplied vector into underlying vector
+	webAddressInfo(const webAddressInfo& info);			// Copy constructor, copies contents of info's underlying url into current vector
 	virtual ~webAddressInfo();
-	void setWebAddressInfo(const Vector<char>& url);		// reads in the input string to url, the extraneous space is already filled with string terminators
-	Vector<char>& getWebAddressInfo();						// returns a pointer to the first element of url
-	void operator= (const webAddressInfo& info);
+	void setWebAddressInfo(const Vector<char>& url);		// Assigns url to given vector
+	Vector<char>& getWebAddressInfo();				// Returns the box of the url
+	void operator= (const webAddressInfo& info);			// Overloaded equals operator, calls vector copy constructor
 };
 
-/* Contains up to twenty url objects; allows output and transitions between urls*/
-class browserTab {
-	friend ostream& operator<< (ostream& s, browserTab& info);
+// Contains any amount of webAddresses, allows output and transitions between urls, as well as removal and changing
+class browserTab { 
+	friend ostream& operator<< (ostream& s, browserTab& info);	// Overloaded cstream operator, signified as friend so is able to access the underlying webAddress
 protected:
-	int numAddress;									// Current number of web addresses in this tab
-	Vector<webAddressInfo> *webAddresses;			// Web addresses in this tab
-	int currentAddress;								// index of current location in webAddresses
-	int getNumAddress();
-	int resetCurrentAddress();
+	int numAddress;							// Current capacity of web addresses in this tab
+	Vector<webAddressInfo> *webAddresses;				// Web addresses in this tab
+	int currentAddress;						// index of current location in webAddresses
+	int getNumAddress();						// Resets the current capacity integer
+	int resetCurrentAddress();					// Resets the current address integer
 public:
-	browserTab();									// empty constructor; automatically called by statically defined variable in main class
-	browserTab(const Vector<char>& inputString);					// creates a new tab with the inputString; never called in project due to static instantiation
-	browserTab(const browserTab& tab);
-	virtual ~browserTab();
-	webAddressInfo& forward();						// returns the 'box' for either the the next url, or the current one if on most recent url
-	webAddressInfo& backward();						// returns the 'box' for either the previous url, or the current one if on least recent url
-	void addAddress(const Vector<char>& inputString);				// creates url (webAddressInfo), sets current index to numAddress - 1, becuase numAddress size is not zero-indexed, prints url
-	void changeCurrentAddress(const Vector<char>& newAddress);
-	void operator= (const browserTab& tab);
+	browserTab();							// Default constructor
+	browserTab(const Vector<char>& inputString);			// Initializer, creates a webAddressInfo object with a url, and adds it to vector
+	browserTab(const browserTab& tab);				// Copy constructor, copies contents of supplied tab to current tab
+	virtual ~browserTab();						// Destructor
+	webAddressInfo& forward();					// Returns 'box' for either the the next url, or the current one if on most recent url
+	webAddressInfo& backward();					// Returns 'box' for either the previous url, or the current one if on least recent url
+	void addAddress(const Vector<char>& inputString);		// Instantiates a webAddressInfo object and adds it to the current webAddresses vector; sets current index to numAddress - 1, and resets capacity; prints added url
+	void changeCurrentAddress(const Vector<char>& newAddress);	// Changes the webAddressInfo object from newAddress to the current index of webAddresses
+	void operator= (const browserTab& tab);				// Overloaded equals operator, calls vector copy constructor
 };
 
 #pragma region webAddressInfo
@@ -403,7 +407,7 @@ webAddressInfo& browserTab::forward() {
 		return (*webAddresses)[currentAddress];
 	}
 	else {
-		resetCurrentAddress();			// in case current address index is somehow greater than or equal to numAddress index
+		resetCurrentAddress(); // In case current address index is somehow greater than or equal to numAddress index
 		throw ArrayBoundsException();
 	}
 	return (*webAddresses)[currentAddress];
@@ -416,7 +420,7 @@ webAddressInfo& browserTab::backward() {
 	}
 	else {
 		if (webAddresses == NULL) { throw ArrayBoundsException(); }
-		currentAddress = 0;							// in case current address index is somehow less than zero
+		currentAddress = 0; // In case current address index is somehow less than zero
 	}
 	return (*webAddresses)[currentAddress];
 }
@@ -448,7 +452,7 @@ void browserTab::operator= (const browserTab& tab) {
 }
 #pragma endregion Methods
 
-// sets each character in a string for a given length to string terminators
+// Removes all characters in a vector
 void strEmpty(Vector<char>& str) {
 	for (int i = str.size() - 1; i >= 0; --i) {
 		str.remove(i);
@@ -458,15 +462,17 @@ void strEmpty(Vector<char>& str) {
 
 int main()
 {
-	char command;									// the given command, e.g. New tab, forward, backward, or print
-	char blank;										// offload variable, junk
-	char aChar;										// reads in url to char, for safety
-	Vector<char> *webAddress = new Vector<char>(201);					// the web address to be wrapped into object
-	Vector<browserTab> *myTabs = new Vector<browserTab>(20);					// statically creates 20 tabs, which statically creates 400 webAddressInfo objects
-	int tabNumber;									// the browserTab object to manipulate
-	bool shouldTakeAction;											// loop variable
+	char command;							// Given command, e.g. New tab, forward, backward, or print
+	char blank;							// Offload variable, junk
+	char aChar;							// Reads in url to char, for safety
+	Vector<char> *webAddress = new Vector<char>(201);		// Vector web address to be wrapped into object
+	Vector<browserTab> *myTabs = new Vector<browserTab>(20);	// Creates a browserTab vector with capacity of 20
+	int tabNumber;							// Tab number on whic the action will take place
+	bool shouldTakeAction;						// Check if the program should follow the command
 
-	while (cin >> tabNumber)						// while end of line is not reached
+	// While end of line is not reached
+	// Skips blank space like Taylor Swift
+	while (cin >> tabNumber)						
 	{
 		cin.get(blank);
 		cin.get(command);
@@ -477,6 +483,7 @@ int main()
 			case 'N': { // New url
 				cin.get(blank);
 				shouldTakeAction = false;
+				// Reads given url to the webAddress vector
 				do {
 					cin.get(aChar);
 					if (aChar != '\n') {
@@ -492,13 +499,16 @@ int main()
 				if (shouldTakeAction) {
 					cout << "Adding address to tab #" << tabNumber << " - ";
 					try {
+						// Should create a new tab
 						if (tabNumber - 1 == (*myTabs).size()) {
 							browserTab *tab = new browserTab(*webAddress);
 							(*myTabs).add(*tab);
 						}
+						// Should add a url to an existing tab
 						else if (tabNumber - 1 < (*myTabs).size()) {
 							(*myTabs)[tabNumber - 1].addAddress(*webAddress);
 						}
+						// Supplied tab number is out of bounds
 						else {
 							throw ArrayBoundsException();
 						}
@@ -511,9 +521,11 @@ int main()
 			case 'F': { // Forward
 				cout << "Attempting to move forwards in tab #" << tabNumber << " - ";
 				try {
+					// Should move forward
 					if (tabNumber - 1 < (*myTabs).size()) {
 						cout << (*myTabs)[tabNumber - 1].forward() << endl;
 					}
+					// Suplied tab number is out of bounds
 					else {
 						throw ArrayBoundsException();
 					}
@@ -521,32 +533,34 @@ int main()
 				catch (ArrayBoundsException bounds) {
 					cout << "Already on most current tab" << endl;
 				}
-				/*myTabs[tabNumber - 1].forward().display();*/
 				break;
 			}
 			case 'B': { // Backward
 				cout << "Attempting to move backwards in tab #" << tabNumber << " - ";
 				try {
+					// Should move backward
 					if (tabNumber - 1 < (*myTabs).size()) {
 						cout << (*myTabs)[tabNumber - 1].backward() << endl;
 					}
+					// Supplied tab number is out of bounds
 					else {
 						throw ArrayBoundsException();
 					}
 
 				}
 				catch (ArrayException arrayException) {
-					cout << "Already moved back as far as possible" << endl;;
+					cout << "Already moved back as far as possible" << endl;
 				}
-				/*myTabs[tabNumber - 1].backward().display();*/
 				break;
 			}
 			case 'P': { // Print current
 				cout << "Printing contents of tab #" << tabNumber << " - ";
 				try {
+					// Should print tab contents
 					if (tabNumber - 1 < (*myTabs).size()) {
 						cout << (*myTabs)[tabNumber - 1] << endl;
 					}
+					// Supplied tab number is out of bounds
 					else {
 						throw ArrayBoundsException();
 					}
@@ -557,10 +571,11 @@ int main()
 				break;
 			}
 			case 'M': {
-				int otherTabNumber;
+				int otherTabNumber; // The second tab number
 				cin >> otherTabNumber;
 				try {
 					cout << "Attempting to move tab #" << tabNumber << " before tab #" << otherTabNumber << " - ";
+					// Should move tabNumber before otherTabNumber
 					if (tabNumber > otherTabNumber) {
 						browserTab info = (*myTabs)[tabNumber];
 						(*myTabs).insert(info, otherTabNumber);
@@ -578,10 +593,12 @@ int main()
 			case 'R': {
 				cout << "Attempting to remove tab #" << tabNumber << " - ";
 				try {
+					// Should remove tab
 					if (tabNumber - 1 < (*myTabs).size()) {
 						cout << (*myTabs)[tabNumber - 1];
 						(*myTabs).remove(tabNumber - 1);
 					}
+					// Supplied tab number is out of bounds
 					else {
 						throw ArrayBoundsException();
 					}
@@ -594,8 +611,9 @@ int main()
 			}
 			case 'C': {
 				cin.get(blank);
-				shouldTakeAction = false;;
+				shouldTakeAction = false;
 				do {
+					// Reads given url into the webAddressInfo vector
 					cin.get(aChar);
 					if (aChar != '\n') {
 						try {
@@ -610,9 +628,11 @@ int main()
 				if (shouldTakeAction) {
 					cout << "Changing the current address in tab #" << tabNumber << " - ";
 					try {
+						// Should change currentAddress
 						if (tabNumber - 1 < (*myTabs).size()) {
 							(*myTabs)[tabNumber - 1].changeCurrentAddress(*webAddress);
 						}
+						// Supplied tab number is out of bounds
 						else {
 							throw ArrayBoundsException();
 						}
@@ -646,6 +666,5 @@ int main()
 			cout << "Illegal Action" << endl;
 		}
 	}
-
 	return 0;
 }
