@@ -2,6 +2,7 @@
 using namespace std;
 
 class Exception { };												// Generic, all exceptions derive from this
+class IncorrectTab : public Exception { };							// In case the user asked for a browser tab that doesn't exist yet
 class IncorrectAction : public Exception { };						// In case the user asked for an action that won't work
 class ArrayException : public Exception { };						// Genric array exception, all array exceptions derive from
 class ArrayMemoryException : public ArrayException { };				// In case the array created causes an error
@@ -10,7 +11,7 @@ class ArrayBoundsException : public ArrayException { };				// In case the user a
 #pragma region array
 // Purely virtual data type from which arrays derive
 template <class DataType>
-class AbstractArrayClass {						
+class AbstractArrayClass {
 public:
 	virtual int size() const = 0;									// Abstract template for size
 	virtual DataType& operator[] (int k) = 0;						// Abstract template for array index overloading
@@ -43,7 +44,7 @@ public:
 
 // Encapsulation of a DataType Vector, allows for dynamically sized array
 template <class DataType>
-class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> { 
+class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> {
 protected:
 	int _currSize;													// Active size of the array	
 	int _incFactor;													// Index at which the size of the array will be doubled
@@ -251,7 +252,7 @@ void Vector<DataType>::remove(int index) {
 #pragma endregion Classes
 
 // Encapsulation of a URL string
-class webAddressInfo 
+class webAddressInfo
 {
 	friend ostream& operator<< (ostream& s, webAddressInfo& info);	// Overloaded cstream operator, signified as friend so is able to access the info's url
 private:
@@ -267,7 +268,7 @@ public:
 };
 
 // Contains any amount of webAddresses, allows output and transitions between urls, as well as removal and changing
-class browserTab { 
+class browserTab {
 	friend ostream& operator<< (ostream& s, browserTab& info);		// Overloaded cstream operator, signified as friend so is able to access the underlying webAddress
 protected:
 	int numAddress;													// Current capacity of web addresses in this tab
@@ -353,8 +354,8 @@ ostream& operator<< (ostream& s, webAddressInfo& info) {
 browserTab::browserTab() {
 	try {
 		webAddresses = new Vector<webAddressInfo>(20);
-		numAddress = getNumAddress();
-		currentAddress = resetCurrentAddress();
+		numAddress = 0;
+		currentAddress = -1;
 	}
 	catch (ArrayMemoryException memory) {
 		cout << "Help, I need somebody" << endl;
@@ -363,8 +364,8 @@ browserTab::browserTab() {
 browserTab::browserTab(const Vector<char>& inputURL) {
 	try {
 		webAddresses = new Vector<webAddressInfo>(20);
-		numAddress = getNumAddress();
-		currentAddress = resetCurrentAddress();
+		numAddress = 0;
+		currentAddress = -1;
 		addAddress(inputURL);
 	}
 	catch (ArrayException memory) {
@@ -379,10 +380,10 @@ browserTab::browserTab(const browserTab& info) {
 browserTab::~browserTab() {
 	if (webAddresses != NULL) { delete webAddresses; }
 	numAddress = 0;
-	currentAddress = 0;
+	currentAddress = -1;
 }
 int browserTab::resetCurrentAddress() {
-	currentAddress = 0;
+	currentAddress = -1;
 	if (webAddresses != NULL) {
 		currentAddress = (*webAddresses).size() - 1;
 	}
@@ -402,13 +403,13 @@ int browserTab::getNumAddress() {
 	return numAddress;
 }
 webAddressInfo& browserTab::forward() {
-	if (currentAddress + 1 < getNumAddress()) {
+	if (currentAddress + 1 < (*webAddresses).size()) {
 		++currentAddress;
 		return (*webAddresses)[currentAddress];
 	}
 	else {
 		resetCurrentAddress(); // In case current address index is somehow greater than or equal to numAddress index
-		throw ArrayBoundsException();
+		cout << "Already on the most recent url - ";
 	}
 	return (*webAddresses)[currentAddress];
 }
@@ -420,6 +421,7 @@ webAddressInfo& browserTab::backward() {
 	}
 	else {
 		if (webAddresses == NULL) { throw ArrayBoundsException(); }
+		cout << "Already moved back as far as possible - ";
 		currentAddress = 0; // In case current address index is somehow less than zero
 	}
 	return (*webAddresses)[currentAddress];
@@ -472,7 +474,7 @@ int main()
 
 	// While end of line is not reached
 	// Skips blank space like Taylor Swift
-	while (cin >> tabNumber)						
+	while (cin >> tabNumber)
 	{
 		cin.get(blank);
 		cin.get(command);
@@ -510,11 +512,11 @@ int main()
 						}
 						// Supplied tab number is out of bounds
 						else {
-							throw ArrayBoundsException();
+							throw IncorrectTab();
 						}
 					}
-					catch (ArrayBoundsException bounds) {
-						cout << "Uh...no" << endl;
+					catch (IncorrectTab) {
+						cout << "Tab #" << tabNumber << " doesn't exist" << endl;
 					}
 				}
 				break; }
@@ -527,11 +529,14 @@ int main()
 					}
 					// Suplied tab number is out of bounds
 					else {
-						throw ArrayBoundsException();
+						throw IncorrectTab();
 					}
 				}
-				catch (ArrayBoundsException bounds) {
-					cout << "Already on most current tab" << endl;
+				catch (ArrayBoundsException) {
+					cout << "Out of bounds" << endl;
+				}
+				catch (IncorrectTab) {
+					cout << "Tab #" << tabNumber << " doesn't exist" << endl;
 				}
 				break;
 			}
@@ -544,12 +549,12 @@ int main()
 					}
 					// Supplied tab number is out of bounds
 					else {
-						throw ArrayBoundsException();
+						throw IncorrectTab();
 					}
 
 				}
-				catch (ArrayException arrayException) {
-					cout << "Already moved back as far as possible" << endl;
+				catch (IncorrectTab) {
+					cout << "Tab #" << tabNumber << " doesn't exist" << endl;
 				}
 				break;
 			}
@@ -562,11 +567,11 @@ int main()
 					}
 					// Supplied tab number is out of bounds
 					else {
-						throw ArrayBoundsException();
+						throw IncorrectTab();
 					}
 				}
-				catch (ArrayBoundsException bounds) {
-					cout << "Erm...this is embarrassing, it didn't work" << endl;
+				catch (IncorrectTab) {
+					cout << "Tab #" << tabNumber << " doesn't exist" << endl;
 				}
 				break;
 			}
@@ -577,15 +582,15 @@ int main()
 					cout << "Attempting to move tab #" << tabNumber << " before tab #" << otherTabNumber << " - ";
 					// Should move tabNumber before otherTabNumber
 					if (tabNumber > otherTabNumber) {
-						browserTab info = (*myTabs)[tabNumber];
+						browserTab info = (*myTabs)[tabNumber -1];
 						(*myTabs).insert(info, otherTabNumber);
 					}
 					else {
 						cout << "Tab is already before other tab";
 					}
 				}
-				catch (ArrayException) {
-					cout << "Incorrect Access";
+				catch (ArrayBoundsException) {
+					cout << "Tab #" << tabNumber << " doesn't exist";
 				}
 				cout << endl;
 				break;
@@ -600,11 +605,11 @@ int main()
 					}
 					// Supplied tab number is out of bounds
 					else {
-						throw ArrayBoundsException();
+						throw IncorrectTab();
 					}
 				}
-				catch (ArrayBoundsException bounds) {
-					cout << "You're out of bounds";
+				catch (IncorrectTab) {
+					cout << "Tab #" << tabNumber << " doesn't exist";
 				}
 				cout << endl;
 				break;
@@ -634,17 +639,17 @@ int main()
 						}
 						// Supplied tab number is out of bounds
 						else {
-							throw ArrayBoundsException();
+							throw IncorrectTab();
 						}
 					}
-					catch (ArrayBoundsException bounds) {
-						cout << "You're out of bounds";
+					catch (IncorrectTab) {
+						cout << "Tab #" << tabNumber << " doesn't exist";
 					}
 					cout << endl;
 				}
 				break;
 			}
-			default: { // illegal action 
+			default: { // Illegal action 
 				// Move to end of line in case extra information
 				do {
 					cin.get(aChar);
