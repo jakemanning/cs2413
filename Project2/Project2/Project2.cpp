@@ -583,7 +583,7 @@ int main()
 					// Should move tabNumber before otherTabNumber
 					if (tabNumber > otherTabNumber) {
 						browserTab info = (*myTabs)[tabNumber -1];
-						(*myTabs).insert(info, otherTabNumber);
+						(*myTabs).insert(info, otherTabNumber - 1);
 					}
 					else {
 						cout << "Tab is already before other tab";
