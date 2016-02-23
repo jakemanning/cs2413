@@ -12,58 +12,58 @@ class ArrayBoundsException : public ArrayException { };				// In case the user a
 template <class DataType>
 class AbstractArrayClass {						
 public:
-	virtual int size() const = 0;					// Abstract template for size
-	virtual DataType& operator[] (int k) = 0;			// Abstract template for array index overloading
+	virtual int size() const = 0;									// Abstract template for size
+	virtual DataType& operator[] (int k) = 0;						// Abstract template for array index overloading
 };
 template <class DataType>
 class ArrayClass : virtual public AbstractArrayClass<DataType> {	// Encapsulation of a DataType array
 protected:
-	DataType *paObject;						// Pointer to an array of DataType
-	int _size;							// Capacity of the array
-	void copy(const ArrayClass<DataType>& ac);			// Allows for a copy constructor to take data from an external ArrayClass
+	DataType *paObject;												// Pointer to an array of DataType
+	int _size;														// Capacity of the array
+	void copy(const ArrayClass<DataType>& ac);						// Allows for a copy constructor to take data from an external ArrayClass
 public:
-	ArrayClass();							// Default constructor, creates a array of size 1
-	ArrayClass(int n);						// Initializer, creates an array of size n
-	ArrayClass(int n, const DataType& val);				// Initializer, fills an array of size n with val
-	ArrayClass(const ArrayClass<DataType>& ac);			// Copy constructor, transfers data from an external ArrayClass, and copies data into self
-	virtual ~ArrayClass();						// Destructor
-	virtual int size() const;					// Encapsulated method to access capacity
-	virtual DataType& operator [] (int k);				// Overloads bracket operator to access data at index of k
-	void operator=(const ArrayClass<DataType>& ac);			// Overloads equals operator to copy information from the given ArrayClass
+	ArrayClass();													// Default constructor, creates a array of size 1
+	ArrayClass(int n);												// Initializer, creates an array of size n
+	ArrayClass(int n, const DataType& val);							// Initializer, fills an array of size n with val
+	ArrayClass(const ArrayClass<DataType>& ac);						// Copy constructor, transfers data from an external ArrayClass, and copies data into self
+	virtual ~ArrayClass();											// Destructor
+	virtual int size() const;										// Encapsulated method to access capacity
+	virtual DataType& operator [] (int k);							// Overloads bracket operator to access data at index of k
+	void operator=(const ArrayClass<DataType>& ac);					// Overloads equals operator to copy information from the given ArrayClass
 };
 
 // Purely virtual vector template
 template <class DataType>
 class AbstractVector : virtual public AbstractArrayClass<DataType> {
 public:
-	virtual void insert(const DataType& item, int index) = 0; 	// Insert a new object at position index in the vector
-	virtual void remove(int index) = 0; 				// Removes the object at position index of the vector
-	virtual void add(const DataType& item) = 0; 			// Adds item at end of the vector
+	virtual void insert(const DataType& item, int index) = 0; 		// Insert a new object at position index in the vector
+	virtual void remove(int index) = 0; 							// Removes the object at position index of the vector
+	virtual void add(const DataType& item) = 0; 					// Adds item at end of the vector
 };
 
 // Encapsulation of a DataType Vector, allows for dynamically sized array
 template <class DataType>
 class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> { 
 protected:
-	int _currSize;							// Active size of the array	
-	int _incFactor;							// Index at which the size of the array will be doubled
+	int _currSize;													// Active size of the array	
+	int _incFactor;													// Index at which the size of the array will be doubled
 public:
-	Vector();							// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
-	Vector(int n);							// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
-	Vector(int n, DataType& val);					// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
-	Vector(const Vector<DataType>& v);				// Copy constructor, transfers data from an external Vector, and copies data into self
-	Vector(const ArrayClass<DataType>& ac);				// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
-	virtual ~Vector();						// Destructor
-	void operator= (const Vector<DataType>& v);			// Overloads equals operator to copy information from the given Vector
-	void operator= (const ArrayClass<DataType>& ac);		// Overloads equals operator to copy information from the given ArrayClass
-	virtual void insert(const DataType& item, int index);		// Shifts all items up to the current array from the given index, and inserts item into given index
-	virtual void remove(int index);					// Removes item at given index, shifts down other objects, and decrements active array size
-	virtual void add(const DataType& item);				// Appends an object to the underlying Array
-	virtual int size() const; 					// Returns size of underlying array
-	virtual int capacity() const;					// Returns capacity of underlying array
-	virtual int incFactor() const;					// Returns current increment factor
-	virtual void setIncFactor(int f);				// Resets the incedent factor to necessary size
-	void setCapacity(int c);					// Resizes underlying array to the specified capacity
+	Vector();														// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
+	Vector(int n);													// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(int n, DataType& val);									// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(const Vector<DataType>& v);								// Copy constructor, transfers data from an external Vector, and copies data into self
+	Vector(const ArrayClass<DataType>& ac);							// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
+	virtual ~Vector();												// Destructor
+	void operator= (const Vector<DataType>& v);						// Overloads equals operator to copy information from the given Vector
+	void operator= (const ArrayClass<DataType>& ac);				// Overloads equals operator to copy information from the given ArrayClass
+	virtual void insert(const DataType& item, int index);			// Shifts all items up to the current array from the given index, and inserts item into given index
+	virtual void remove(int index);									// Removes item at given index, shifts down other objects, and decrements active array size
+	virtual void add(const DataType& item);							// Appends an object to the underlying Array
+	virtual int size() const; 										// Returns size of underlying array
+	virtual int capacity() const;									// Returns capacity of underlying array
+	virtual int incFactor() const;									// Returns current increment factor
+	virtual void setIncFactor(int f);								// Resets the incedent factor to necessary size
+	void setCapacity(int c);										// Resizes underlying array to the specified capacity
 };
 #pragma region array
 template <class DataType>
