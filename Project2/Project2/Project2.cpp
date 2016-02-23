@@ -1,11 +1,11 @@
 #include <iostream>
 using namespace std;
 
-class Exception { };							// Generic, all exceptions derive from this
-class IncorrectAction : public Exception { };				// In case the user asked for an action that won't work
-class ArrayException : public Exception { };				// Genric array exception, all array exceptions derive from
-class ArrayMemoryException : public ArrayException { };			// In case the array created causes an error
-class ArrayBoundsException : public ArrayException { };			// In case the user asked for an index that was out of bounds
+class Exception { };												// Generic, all exceptions derive from this
+class IncorrectAction : public Exception { };						// In case the user asked for an action that won't work
+class ArrayException : public Exception { };						// Genric array exception, all array exceptions derive from
+class ArrayMemoryException : public ArrayException { };				// In case the array created causes an error
+class ArrayBoundsException : public ArrayException { };				// In case the user asked for an index that was out of bounds
 
 #pragma region array
 // Purely virtual data type from which arrays derive
@@ -268,23 +268,23 @@ public:
 
 // Contains any amount of webAddresses, allows output and transitions between urls, as well as removal and changing
 class browserTab { 
-	friend ostream& operator<< (ostream& s, browserTab& info);	// Overloaded cstream operator, signified as friend so is able to access the underlying webAddress
+	friend ostream& operator<< (ostream& s, browserTab& info);		// Overloaded cstream operator, signified as friend so is able to access the underlying webAddress
 protected:
-	int numAddress;							// Current capacity of web addresses in this tab
-	Vector<webAddressInfo> *webAddresses;				// Web addresses in this tab
-	int currentAddress;						// index of current location in webAddresses
-	int getNumAddress();						// Resets the current capacity integer
-	int resetCurrentAddress();					// Resets the current address integer
+	int numAddress;													// Current capacity of web addresses in this tab
+	Vector<webAddressInfo> *webAddresses;							// Web addresses in this tab
+	int currentAddress;												// index of current location in webAddresses
+	int getNumAddress();											// Resets the current capacity integer
+	int resetCurrentAddress();										// Resets the current address integer
 public:
-	browserTab();							// Default constructor
-	browserTab(const Vector<char>& inputString);			// Initializer, creates a webAddressInfo object with a url, and adds it to vector
-	browserTab(const browserTab& tab);				// Copy constructor, copies contents of supplied tab to current tab
-	virtual ~browserTab();						// Destructor
-	webAddressInfo& forward();					// Returns 'box' for either the the next url, or the current one if on most recent url
-	webAddressInfo& backward();					// Returns 'box' for either the previous url, or the current one if on least recent url
-	void addAddress(const Vector<char>& inputString);		// Instantiates a webAddressInfo object and adds it to the current webAddresses vector; sets current index to numAddress - 1, and resets capacity; prints added url
-	void changeCurrentAddress(const Vector<char>& newAddress);	// Changes the webAddressInfo object from newAddress to the current index of webAddresses
-	void operator= (const browserTab& tab);				// Overloaded equals operator, calls vector copy constructor
+	browserTab();													// Default constructor
+	browserTab(const Vector<char>& inputString);					// Initializer, creates a webAddressInfo object with a url, and adds it to vector
+	browserTab(const browserTab& tab);								// Copy constructor, copies contents of supplied tab to current tab
+	virtual ~browserTab();											// Destructor
+	webAddressInfo& forward();										// Returns 'box' for either the the next url, or the current one if on most recent url
+	webAddressInfo& backward();										// Returns 'box' for either the previous url, or the current one if on least recent url
+	void addAddress(const Vector<char>& inputString);				// Instantiates a webAddressInfo object and adds it to the current webAddresses vector; sets current index to numAddress - 1, and resets capacity; prints added url
+	void changeCurrentAddress(const Vector<char>& newAddress);		// Changes the webAddressInfo object from newAddress to the current index of webAddresses
+	void operator= (const browserTab& tab);							// Overloaded equals operator, calls vector copy constructor
 };
 
 #pragma region webAddressInfo
@@ -462,13 +462,13 @@ void strEmpty(Vector<char>& str) {
 
 int main()
 {
-	char command;							// Given command, e.g. New tab, forward, backward, or print
-	char blank;							// Offload variable, junk
-	char aChar;							// Reads in url to char, for safety
-	Vector<char> *webAddress = new Vector<char>(201);		// Vector web address to be wrapped into object
-	Vector<browserTab> *myTabs = new Vector<browserTab>(20);	// Creates a browserTab vector with capacity of 20
-	int tabNumber;							// Tab number on whic the action will take place
-	bool shouldTakeAction;						// Check if the program should follow the command
+	char command;													// Given command, e.g. New tab, forward, backward, or print
+	char blank;														// Offload variable, junk
+	char aChar;														// Reads in url to char, for safety
+	Vector<char> *webAddress = new Vector<char>(201);				// Vector web address to be wrapped into object
+	Vector<browserTab> *myTabs = new Vector<browserTab>(20);		// Creates a browserTab vector with capacity of 20
+	int tabNumber;													// Tab number on whic the action will take place
+	bool shouldTakeAction;											// Check if the program should follow the command
 
 	// While end of line is not reached
 	// Skips blank space like Taylor Swift
