@@ -255,15 +255,15 @@ class webAddressInfo
 {
 	friend ostream& operator<< (ostream& s, webAddressInfo& info);	// Overloaded cstream operator, signified as friend so is able to access the info's url
 private:
-	Vector<char> *url;						// Stores the contents of a URL
+	Vector<char> *url;												// Stores the contents of a URL
 public:
-	webAddressInfo();						// Default constructor
-	webAddressInfo(const Vector<char>& info);			// Initializer constructor, copies contents of supplied vector into underlying vector
-	webAddressInfo(const webAddressInfo& info);			// Copy constructor, copies contents of info's underlying url into current vector
+	webAddressInfo();												// Default constructor
+	webAddressInfo(const Vector<char>& info);						// Initializer constructor, copies contents of supplied vector into underlying vector
+	webAddressInfo(const webAddressInfo& info);						// Copy constructor, copies contents of info's underlying url into current vector
 	virtual ~webAddressInfo();
-	void setWebAddressInfo(const Vector<char>& url);		// Assigns url to given vector
-	Vector<char>& getWebAddressInfo();				// Returns the box of the url
-	void operator= (const webAddressInfo& info);			// Overloaded equals operator, calls vector copy constructor
+	void setWebAddressInfo(const Vector<char>& url);				// Assigns url to given vector
+	Vector<char>& getWebAddressInfo();								// Returns the box of the url
+	void operator= (const webAddressInfo& info);					// Overloaded equals operator, calls vector copy constructor
 };
 
 // Contains any amount of webAddresses, allows output and transitions between urls, as well as removal and changing
