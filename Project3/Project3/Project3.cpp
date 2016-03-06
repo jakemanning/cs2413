@@ -1,65 +1,72 @@
 #include <iostream>
 using namespace std;
 
+#pragma region Exceptions
 class Exception { };												// Generic, all exceptions derive from this
 class IncorrectTab : public Exception { };							// In case the user asked for a browser tab that doesn't exist yet
 class IncorrectAction : public Exception { };						// In case the user asked for an action that won't work
 class ArrayException : public Exception { };						// Genric array exception, all array exceptions derive from
 class ArrayMemoryException : public ArrayException { };				// In case the array created causes an error
 class ArrayBoundsException : public ArrayException { };				// In case the user asked for an index that was out of bounds
+#pragma endregion
 
 #pragma region array
+																	// Purely virtual data type from which arrays derive
 template <class DataType>
 class AbstractArrayClass {
 public:
-	virtual int size() const = NULL;
-	virtual DataType& operator[] (int k) = NULL;
+	virtual int size() const = 0;									// Abstract template for size
+	virtual DataType& operator[] (int k) = 0;						// Abstract template for array index overloading
 };
 template <class DataType>
-class ArrayClass : virtual public AbstractArrayClass<DataType> {
+class ArrayClass : virtual public AbstractArrayClass<DataType> {	// Encapsulation of a DataType array
 protected:
-	DataType *paObject;
-	int _size;
-	void copy(const ArrayClass<DataType>& ac);
+	DataType *paObject;												// Pointer to an array of DataType
+	int _size;														// Capacity of the array
+	void copy(const ArrayClass<DataType>& ac);						// Allows for a copy constructor to take data from an external ArrayClass
 public:
-	ArrayClass();
-	ArrayClass(int n);
-	ArrayClass(int n, const DataType& val);
-	ArrayClass(const ArrayClass<DataType>& ac);
-	virtual ~ArrayClass();
-	virtual int size() const;
-	virtual DataType& operator [] (int k);
-	void operator=(const ArrayClass<DataType>& ac);
+	ArrayClass();													// Default constructor, creates a array of size 1
+	ArrayClass(int n);												// Initializer, creates an array of size n
+	ArrayClass(int n, const DataType& val);							// Initializer, fills an array of size n with val
+	ArrayClass(const ArrayClass<DataType>& ac);						// Copy constructor, transfers data from an external ArrayClass, and copies data into self
+	virtual ~ArrayClass();											// Destructor
+	virtual int size() const;										// Encapsulated method to access capacity
+	virtual DataType& operator [] (int k);							// Overloads bracket operator to access data at index of k
+	void operator=(const ArrayClass<DataType>& ac);					// Overloads equals operator to copy information from the given ArrayClass
 };
+
+// Purely virtual vector template
 template <class DataType>
 class AbstractVector : virtual public AbstractArrayClass<DataType> {
 public:
-	virtual void insert(const DataType& item, int index) = NULL; // insert a new object at position index in the vector
-	virtual void remove(int index) = NULL; // removes the object at position index of the vector
-	virtual void add(const DataType& item) = NULL; // adds item at end of the vector
+	virtual void insert(const DataType& item, int index) = 0; 		// Insert a new object at position index in the vector
+	virtual void remove(int index) = 0; 							// Removes the object at position index of the vector
+	virtual void add(const DataType& item) = 0; 					// Adds item at end of the vector
 };
+
+// Encapsulation of a DataType Vector, allows for dynamically sized array
 template <class DataType>
 class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> {
 protected:
-	int _currSize;
-	int _incFactor;
+	int _currSize;													// Active size of the array	
+	int _incFactor;													// Index at which the size of the array will be doubled
 public:
-	Vector();
-	Vector(int n);
-	Vector(int n, DataType& val);
-	Vector(const Vector<DataType>& v);
-	Vector(const ArrayClass<DataType>& ac);
-	virtual ~Vector();
-	void operator= (const Vector<DataType>& v);
-	void operator= (const ArrayClass<DataType>& ac);
-	virtual void insert(const DataType& item, int index);
-	virtual void remove(int index);
-	virtual void add(const DataType& item);
-	virtual int size() const; // similar to size method as it returns size of underlying array
-	virtual int capacity() const;
-	virtual int incFactor() const;
-	virtual void setIncFactor(int f);
-	void setCapacity(int c);
+	Vector();														// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
+	Vector(int n);													// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(int n, DataType& val);									// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(const Vector<DataType>& v);								// Copy constructor, transfers data from an external Vector, and copies data into self
+	Vector(const ArrayClass<DataType>& ac);							// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
+	virtual ~Vector();												// Destructor
+	void operator= (const Vector<DataType>& v);						// Overloads equals operator to copy information from the given Vector
+	void operator= (const ArrayClass<DataType>& ac);				// Overloads equals operator to copy information from the given ArrayClass
+	virtual void insert(const DataType& item, int index);			// Shifts all items up to the current array from the given index, and inserts item into given index
+	virtual void remove(int index);									// Removes item at given index, shifts down other objects, and decrements active array size
+	virtual void add(const DataType& item);							// Appends an object to the underlying Array
+	virtual int size() const; 										// Returns size of underlying array
+	virtual int capacity() const;									// Returns capacity of underlying array
+	virtual int incFactor() const;									// Returns current increment factor
+	virtual void setIncFactor(int f);								// Resets the incedent factor to necessary size
+	void setCapacity(int c);										// Resizes underlying array to the specified capacity
 };
 #pragma region array
 template <class DataType>
@@ -71,14 +78,14 @@ ArrayClass<DataType>::ArrayClass() {
 }
 template <class DataType>
 ArrayClass<DataType>::ArrayClass(int n) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[n];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = n;
 }
 template <class DataType>
 ArrayClass<DataType>::ArrayClass(int n, const DataType& val) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[n];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = n;
@@ -94,11 +101,10 @@ template <class DataType>
 ArrayClass<DataType>::~ArrayClass() {
 	if (paObject != NULL) { delete[] paObject; }
 	paObject = NULL;
-	_size = 0;
 }
 template <class DataType>
 void ArrayClass<DataType>::copy(const ArrayClass<DataType>& ac) {
-	_size = 0; // default in case allocation fails
+	_size = 0; // Default in case allocation fails
 	paObject = new DataType[ac._size];
 	if (paObject == NULL) { throw ArrayMemoryException(); }
 	_size = ac._size;
@@ -117,20 +123,14 @@ DataType& ArrayClass<DataType>::operator[] (int k) {
 }
 template <class DataType>
 void ArrayClass<DataType>::operator=(const ArrayClass<DataType>& ac) {
-	if (paObject != NULL) { delete[] paObject; } // the already existing array is deleted and copied in to the new array
+	if (paObject != NULL) { delete[] paObject; } // Existing array is deleted and copied in to the new array
 	copy(ac);
 }
 template <class DataType>
 ostream& operator << (ostream& s, AbstractArrayClass<DataType>& ac) {
-	s << "[";
 	for (int i = 0; i < ac.size(); ++i) {
-		if (i > 0) {
-			s << ',';
-		}
 		s << ac[i];
-
 	}
-	s << "]";
 	return s;
 }
 #pragma endregion Methods
@@ -138,19 +138,18 @@ ostream& operator << (ostream& s, AbstractArrayClass<DataType>& ac) {
 #pragma region Vector
 template <class DataType>
 Vector<DataType>::Vector() : ArrayClass<DataType>() {
-	// default values
-	_currSize = 0;
+	_currSize = 0; // Default values
 	_incFactor = 5;
 }
 template <class DataType>
 Vector<DataType>::Vector(int n) : ArrayClass<DataType>(n) {
 	_currSize = 0;
-	_incFactor = (n + 1) / 2; // arbitrary
+	_incFactor = (n + 1) / 2; // Arbitrary
 }
 template <class DataType>
 Vector<DataType>::Vector(int n, DataType& val) : ArrayClass<DataType>(n, val) {
 	_currSize = 0;
-	_incFactor = n / 2; // arbitrary
+	_incFactor = n / 2; // Arbitrary
 }
 template <class DataType>
 Vector<DataType>::Vector(const Vector<DataType>& v) : ArrayClass<DataType>(v) {
@@ -248,48 +247,117 @@ void Vector<DataType>::remove(int index) {
 
 #pragma endregion Classes
 
+#pragma region abstractLinkedList
 template <class DT>
-class AbstractLinkedList {
-	friend ostream& operator<< (ostream& s, AbstractLinkedList<DT>& info);
+class Enumeration {
 public:
-	virtual DT& info() = 0; // Returns the object in the head of the linked list
-	virtual AbstractLinkedList<DT>* next() = 0; // Returns the LinkedLIst pointed by this LinkedList
-	virtual bool isEmpty() = 0; // Returns true if the list is empty
-	virtual void add(const DT& object) = 0; // Adds object to the beginning of the list
-	virtual AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next) = 0; // Attaches next as _next field of list; returns old _next fiel
-	virtual void insertAt(const DT& newObj, int position) = 0; // Inserts newObj so that it will be at node number position (counting the head node as 0)
-	virtual DT& infoAt(int position) = 0; // Return the object in the linked list at the location specified by position
-	virtual DT& find(const DT& key) = 0; // Returns a node matching key
-	virtual DT remove() = 0; // Deletes the first node of the linked list, if any, and returns it
-	virtual DT removeAt(int position) = 0; // Deletes the node matching key, if any, and returns it
-	virtual int size() = 0; // Returns the number of nodes in the list
-	virtual void display(ostream& s); // Display the nodes of the linked list
+	virtual bool hasMoreElements() = 0; // Boolean method which determines whether there are any more elements in the data structure being Enumerated
+	virtual DT& nextElement() = 0; // Returns the object which is the next element
 };
 
 template <class DT>
-void AbstractLinkedList<DT>::display(ostream& s) {
+class AbstractLinkedList {
+public:
+	virtual DT& info() = 0;											// Returns the object in the head of the linked list
+	virtual AbstractLinkedList<DT>* next() = 0;						// Returns the LinkedLIst pointed by this LinkedList
+	virtual bool isEmpty() = 0;										// Returns true if the list is empty
+	virtual void add(const DT& object) = 0;							// Adds object to the beginning of the list
+	virtual AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next) = 0; // Attaches next as _next field of list; returns old _next fiel
+	virtual void insertAt(const DT& newObj, int position) = 0;		// Inserts newObj so that it will be at node number position (counting the head node as 0)
+	virtual DT& infoAt(int position) = 0;							// Return the object in the linked list at the location specified by position
+	virtual DT& find(const DT& key) = 0;							// Returns a node matching key
+	virtual DT remove() = 0;										// Deletes the first node of the linked list, if any, and returns it
+	virtual DT removeAt(int position) = 0;							// Deletes the node matching key, if any, and returns it
+	virtual int size() = 0;											// Returns the number of nodes in the list
+	virtual Enumeration<DT>* enumerator();							// Returns an enumeration of the data contained in the list
+	virtual void display(ostream& s);								// Display the nodes of the linked list
+};
 
+template <class DT>
+class LLEnumerator : public Enumeration<DT> {
+	friend AbstractLinkedList<DT>;
+protected:
+	AbstractLinkedList<DT>* _LL;
+public:
+	LLEnumerator();
+	LLEnumerator(AbstractLinkedList<DT>* LL);
+	virtual bool hasMoreElements();
+	virtual DT& nextElement();
+};
+
+template <class DT>
+Enumeration<DT>* AbstractLinkedList<DT>::enumerator() {
+	// Returns an enumeration of the data contained in the list 
+	return new LLEnumerator<DT>(this);
 }
 
 template <class DT>
+LLEnumerator<DT>::LLEnumerator() {
+	_LL = NULL;
+}
+template<class DT>
+LLEnumerator<DT>::LLEnumerator(AbstractLinkedList<DT>* LL) {
+	_LL = LL;
+}
+template<class DT>
+bool LLEnumerator<DT>::hasMoreElements() {
+	return ((_LL != NULL) && (!_LL->isEmpty()));
+}
+template <class DT>
+DT& LLEnumerator<DT>::nextElement() {
+	if ((_LL == NULL) || (_LL->isEmpty())) {
+		cout << "Empty";
+	}
+	else {
+		AbstractLinkedList<DT>* curr = _LL;
+		_LL = _LL->next();
+		return curr->info();
+	}
+}
+template <class DT>
+void AbstractLinkedList<DT>::display(ostream& s) {
+	s << "[";
+	bool first = true;
+	Enumeration<DT>* e = enumerator();
+
+	while (e->hasMoreElements()) {
+		if (!first) {
+			s << ", ";
+		}
+		else {
+			first = false;
+		}
+		s << e->nextElement();
+	}
+	s << "]";
+	delete e;
+}
+template <class DT>
+ostream& operator<< (ostream& s, AbstractLinkedList<DT>& LL) {
+	LL.display(s);
+	return s;
+}
+#pragma endregion Definitions
+
+#pragma region LinkedList
+template <class DT>
 class Cell : virtual public AbstractLinkedList<DT> {
-	friend ostream& operator<< (ostream& s, Cell<DT>& info);
 protected:
-	DT* _value;
-	Cell<DT>* _right;
-	void Cell<DT>::copy(const Cell<DT>& linkedList);
+	DT* _value;														// Each cell's value
+	Cell<DT>* _right;												// The reference to the cell to the right
+	void Cell<DT>::copy(const Cell<DT>& linkedList);				// Copies all information from given cell to current cell and deletes given cell
 public:
-	Cell();
-	Cell(const DT& info);
-	Cell(const DT& info, Cell<DT>* cell);
-	Cell(const Cell<DT>& linkedList);
-	AbstractLinkedList<DT>* next();
-	DT& info();
-	bool isEmpty();
-	void add(const DT& object);
-	AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next);
-	void insertAt(const DT& newObj, int position);
-	DT& infoAt(int position);
+	Cell();															// Constructs a new cell
+	Cell(const DT& info);											// Constructs a new cell with the supplied information
+	Cell(const DT& info, Cell<DT>* cell);							// Constructs a new cell with the supplied information and the cell to the riht
+	Cell(const Cell<DT>& linkedList);								// Constructs a new Cell with the supplied copy constructor
+	AbstractLinkedList<DT>* next();									// The next cell in the list
+	DT& info();														// The underlying node's information
+	bool isEmpty();													// Checks whether the info in the cell is null
+	void add(const DT& object);										// Adds a new cell to the front of the list with the supplied information
+	AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next);	// Sets the cell to the right to the supplied list
+	void insertAt(const DT& newObj, int position);					// Inserts a cell to the end of the list
+	DT& infoAt(int position);										// Retrieves the information at a particular cell
 	DT& find(const DT& key);
 	DT remove();
 	DT removeAt(int position);
@@ -300,7 +368,6 @@ public:
 
 template <class FirstDT, class SecondDT>
 class CellNode {
-	friend ostream& operator<< (ostream& s, CellNode<FirstDT, SecondDT>& cellNode);
 protected:
 	FirstDT* _info;
 	Cell<SecondDT>* _myCell;
@@ -312,20 +379,22 @@ public:
 	~CellNode();
 	void copy(const CellNode<FirstDT, SecondDT>& cellNode);
 	Cell<SecondDT>& returnMyCell();
+	FirstDT& returnMyInfo();
 	void operator= (const CellNode<FirstDT, SecondDT>& tab);
 };
 
 template <class FirstDT, class SecondDT>
 class MasterCell {
 protected:
-	Vector<CellNode<FirstDT, SecondDT>*> _myCellNodes;
+	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;
 public:
 	MasterCell();
 	MasterCell(int vectorSize);
 	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);
 	~MasterCell();
-	void MasterCell<FirstDT, SecondDT>::insertCellNode(const CellNode<FirstDT, SecondDT>& cellNode);
+	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);
 	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);
+	Vector<CellNode<FirstDT, SecondDT>>& getVector();
 };
 
 #pragma region Cell
@@ -526,10 +595,6 @@ DT Cell<DT>::removeAt(int position) {
 	}
 
 }
-template <class DT>
-ostream& operator<< (ostream& s, Cell<DT>& info) {
-	return s;
-}
 #pragma endregion Methods
 
 #pragma region CellNode
@@ -540,15 +605,17 @@ CellNode<FirstDT, SecondDT>::CellNode() {
 }
 template <class FirstDT, class SecondDT>
 CellNode<FirstDT, SecondDT>::CellNode(const FirstDT& info) {
-	_info = info;
-	_myCell = NULL;
+	_info = = new FirstDT(info);
+	if (_info != NULL) {
+		_myCell = NULL;
+	}
 }
 template <class FirstDT, class SecondDT>
 CellNode<FirstDT, SecondDT>::CellNode(const CellNode<FirstDT, SecondDT>& cellNode) {
 	copy(cellNode);
 }
 template <class FirstDT, class SecondDT>
-CellNode<FirstDT, SecondDT>::CellNode<FirstDT, SecondDT>(const FirstDT& info, Cell<SecondDT>* myCell) {
+CellNode<FirstDT, SecondDT>::CellNode(const FirstDT& info, Cell<SecondDT>* myCell) {
 	_info = new FirstDT(info);
 	if (_info != NULL) {
 		_myCell = myCell;
@@ -560,7 +627,7 @@ void CellNode<FirstDT, SecondDT>::copy(const CellNode<FirstDT, SecondDT>& cellNo
 		_info = NULL;
 	}
 	else {
-		_info = new DT(*(cellNode._info));
+		_info = new FirstDT(*(cellNode._info));
 
 	}
 	if (cellNode._myCell == NULL) {
@@ -569,7 +636,7 @@ void CellNode<FirstDT, SecondDT>::copy(const CellNode<FirstDT, SecondDT>& cellNo
 		}
 	}
 	else {
-		_myCell = new Cell<DT>(*(cellNode._myCell));
+		_myCell = new Cell<SecondDT>(*(cellNode._myCell));
 	}
 }
 template <class FirstDT, class SecondDT>
@@ -600,7 +667,14 @@ Cell<SecondDT>& CellNode<FirstDT, SecondDT>::returnMyCell() {
 	}
 }
 template <class FirstDT, class SecondDT>
-ostream& operator<< (ostream& s, CellNode<FirstDT, SecondDT>& cellNode) {
+FirstDT& CellNode<FirstDT, SecondDT>::returnMyInfo() {
+	if (_info != NULL) {
+		return (*_info);
+	}
+}
+template <class FirstDT, class SecondDT>
+ostream& operator<< (ostream& s, CellNode<FirstDT, SecondDT> & cellNode) {
+	s << "Info: " << cellNode.returnMyInfo() << ", Cells: " << cellNode.returnMyCell();
 	return s;
 }
 #pragma endregion Methods
@@ -620,64 +694,56 @@ MasterCell<FirstDT, SecondDT>::MasterCell(const CellNode<FirstDT, SecondDT>& cel
 }
 template <class FirstDT, class SecondDT>
 MasterCell<FirstDT, SecondDT>::~MasterCell() {
-
+	// automatically deletes internal vector
 }
 template <class FirstDT, class SecondDT>
-void MasterCell<FirstDT, SecondDT>::insertCellNode(const CellNode<FirstDT, SecondDT>& cellNode) {
-	
+void MasterCell<FirstDT, SecondDT>::insertCellNode(CellNode<FirstDT, SecondDT>& cellNode) {
+	_myCellNodes.add(cellNode);
 }
 template<class FirstDT, class SecondDT>
 void MasterCell<FirstDT, SecondDT>::operator= (const MasterCell<FirstDT, SecondDT>& masterCell) {
-	for (int i = 0; i < _myCellNodes.size(); ++i) {
-		
+
+}
+template <class FirstDT, class SecondDT>
+Vector<CellNode<FirstDT, SecondDT>>& MasterCell<FirstDT, SecondDT>::getVector() {
+	return _myCellNodes;
+}
+template <class FirstDT, class SecondDT>
+ostream& operator<< (ostream& s, MasterCell<FirstDT, SecondDT>& masterCell) {
+	for (int i = 0; i < masterCell.getVector().size(); ++i) {
+		s << masterCell.getVector()[i] << endl;
 	}
+	return s;
 }
 #pragma endregion Methods
+#pragma endregion Definitions
 
+void strEmpty(Vector<char>& str) {
+	for (int i = str.size() - 1; i >= 0; --i) {
+		str.remove(i);
+	}
+}
 int main() {
 
 	int intInfo;
 	int noItems;
 	int id;
-	char charInfo;
+	Vector<char> charInfo;
+	char buffer;
 	char comma;
 
-	
-	/*intInfo = 5;
-	int test[] = { 1,2,3 };
-	Cell<int>* mainCell = new Cell<int>(test[0]);
-	for (int i = 1; i < 3; ++i) {
-		
-	}
-	CellNode<int, int> example(intInfo, testCell);
-	for (int i = 0; i < 3; ++i) {
-		cout << (*testCell).infoAt(i) << endl;
-	}*/
-#pragma region Character
-	// Project3_InputFile_Part1
-	//while (cin >> charInfo) {
-	//	cout << charInfo;
-	//	do {
-	//		cin.get(charInfo);
-	//		cout << charInfo;
-	//	} while (cin.peek() != ',');
-	//	cin.get(comma);
-	//	cout << comma;
-	//	cin >> noItems;
-	//	cout << " " << noItems;
-	//	for (int i = 0; i < noItems; ++i) {
-	//		cin >> id;
-	//		// Do stuff with id
-	//		cout << " " << id;
-	//	}
-	//	cout << endl;
-	//}
-#pragma endregion Input
+#pragma region BEGIN COMMENT
+	/* Project3_InputFile_Part1 */
 
-#pragma region Integer
-	// Project3_InputFile_Part2
-	MasterCell<int, int> masterCell;
-	while (cin >> intInfo) {
+	MasterCell<Vector<char>, int> charMasterCell;
+	while (cin >> buffer) {
+		strEmpty(charInfo);
+		charInfo.add(buffer);
+		do {
+			cin.get(buffer);
+			charInfo.add(buffer);
+		} while (cin.peek() != ',');
+
 		cin.get(comma);
 		cin >> noItems;
 		Cell<int>* cell = new Cell<int>();
@@ -686,10 +752,29 @@ int main() {
 			// Do stuff with id
 			(*cell).insertAt(id, i);
 		}
-		CellNode<int, int> cellNode(intInfo, cell);
-		masterCell.insertCellNode(cellNode);
-		
+		CellNode<Vector<char>, int> cellNode(charInfo, cell);
+		charMasterCell.insertCellNode(cellNode);
 	}
-	
-#pragma endregion Input
+	cout << charMasterCell << endl;
+#pragma endregion HERE
+
+#pragma region BEGIN COMMENT
+	/* Project3_InputFile_Part2 */
+
+	//MasterCell<int, int> intMasterCell;
+	//while (cin >> intInfo) {
+	//	cin.get(comma);
+	//	cin >> noItems;
+	//	Cell<int>* cell = new Cell<int>();
+		//for (int i = 0; i < noItems; ++i) {
+		//	cin >> id;
+		//	// Do stuff with id
+		//	(*cell).insertAt(id, i);
+		//}
+	//	CellNode<int, int> cellNode(intInfo, cell);
+	//	intMasterCell.insertCellNode(cellNode);
+	//}
+	//cout << intMasterCell << endl;
+
+#pragma endregion HERE
 }
