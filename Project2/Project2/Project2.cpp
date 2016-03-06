@@ -582,8 +582,10 @@ int main()
 					cout << "Attempting to move tab #" << tabNumber << " before tab #" << otherTabNumber << " - ";
 					// Should move tabNumber before otherTabNumber
 					if (tabNumber > otherTabNumber) {
-						browserTab info = (*myTabs)[tabNumber -1];
-						(*myTabs).insert(info, otherTabNumber - 1);
+						browserTab info = (*myTabs)[1/*tabNumber -1*/];
+						cout << "BEFORE" << (*myTabs)[0] << " " << (*myTabs)[1/*otherTabNumber - 1*/] << endl;
+						(*myTabs).insert(info, 0/*otherTabNumber - 1*/);
+						cout << "AFTER" << (*myTabs)[0/*tabNumber - 1*/] << " " << (*myTabs)[1/*otherTabNumber - 1*/] << endl;
 					}
 					else {
 						cout << "Tab is already before other tab";
