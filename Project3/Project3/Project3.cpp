@@ -658,36 +658,39 @@ int main() {
 	char comma;
 
 
+
+
 	/* Project3_InputFile_Part1 */
 #pragma region BEGIN COMMENT
-//MasterCell<Vector<char>, int> charMasterCell;
-//while (cin >> buffer) {
-//	strEmpty(charInfo);
-//	charInfo.add(buffer);
-//	do {
-//		cin.get(buffer);
-//		charInfo.add(buffer);
-//	} while (cin.peek() != ',');
+	/* Begin Test Information*/
+	Vector<char> firstTestCellInfo;
+	Vector<char> secondTestCellInfo;
+	char test[] = { 'a','b','c','d','e' };
+	char firstTestInfo[] = { 1,2,3,4,5 };
+	int secondTestInfo[] = { 100,200,300,400,500 };
+	Cell<int>* firstTestCell = new Cell<int>();
+	Cell<int>* secondTestCell = new Cell<int>();
+	for (int index = 0; index < 5; ++index) {
+		firstTestCellInfo.add(test[index]);
+		secondTestCellInfo.add(test[4 - index]);
+		(*firstTestCell).insertAt(firstTestInfo[index], index);
+		(*secondTestCell).insertAt(secondTestInfo[index], index);
+	}
+	CellNode<Vector<char>, int> firstTestCellNode(firstTestCellInfo, firstTestCell);
+	CellNode<Vector<char>, int> secondTestCellNode(secondTestCellInfo, secondTestCell);
+	MasterCell<Vector<char>, int> testMasterCell(firstTestCellNode);
+	testMasterCell.insertCellNode(secondTestCellNode);
+	/* End Test Information*/
 
-//	cin.get(comma);
-//	cin >> noItems;
-//	Cell<int>* cell = new Cell<int>();
-//	for (int i = 0; i < noItems; ++i) {
-//		cin >> id;
-//		// Do stuff with id
-//		(*cell).insertAt(id, i);
-//	}
-//	CellNode<Vector<char>, int> cellNode(charInfo, cell);
-//	charMasterCell.insertCellNode(cellNode);
-//}
-//cout << charMasterCell << endl;
-#pragma endregion HERE
+	MasterCell<Vector<char>, int> charMasterCell;
+	while (cin >> buffer) {
+		strEmpty(charInfo);
+		charInfo.add(buffer);
+		do {
+			cin.get(buffer);
+			charInfo.add(buffer);
+		} while (cin.peek() != ',');
 
-
-	/* Project3_InputFile_Part2 */
-#pragma region BEGIN COMMENT
-	MasterCell<int, int> intMasterCell;
-	while (cin >> intInfo) {
 		cin.get(comma);
 		cin >> noItems;
 		Cell<int>* cell = new Cell<int>();
@@ -696,10 +699,50 @@ int main() {
 			// Do stuff with id
 			(*cell).insertAt(id, i);
 		}
-		CellNode<int, int> cellNode(intInfo, cell);
-		intMasterCell.insertCellNode(cellNode);
+		CellNode<Vector<char>, int> cellNode(charInfo, cell);
+		charMasterCell.insertCellNode(cellNode);
 	}
-	cout << intMasterCell << endl;
+	cout << charMasterCell << endl;
+	charMasterCell = testMasterCell;
+	cout << endl << "New Master Cell: " << endl << charMasterCell << endl;
+#pragma endregion HERE
+
+
+	/* Project3_InputFile_Part2 */
+#pragma region BEGIN COMMENT
+	///* Begin Test Information */
+	//int firstTestCellInfo = 12;
+	//int secondTestCellInfo = 34;
+	//int firstTestInfo[] = { 1,2,3,4,5 };
+	//int secondTestInfo[] = { 100,200,300,400,500 };
+	//Cell<int>* firstTestCell = new Cell<int>();
+	//Cell<int>* secondTestCell = new Cell<int>();
+	//for (int index = 0; index < 5; ++index) {
+	//	(*firstTestCell).insertAt(firstTestInfo[index], index);
+	//	(*secondTestCell).insertAt(secondTestInfo[index], index);
+	//}
+	//CellNode<int, int> firstTestCellNode(firstTestCellInfo, firstTestCell);
+	//CellNode<int, int> secondTestCellNode(secondTestCellInfo, secondTestCell);
+	//MasterCell<int, int> testMasterCell(firstTestCellNode);
+	//testMasterCell.insertCellNode(secondTestCellNode);
+	///* End Test Information*/
+	//
+	//MasterCell<int, int> intMasterCell;
+	//while (cin >> intInfo) {
+	//	cin.get(comma);
+	//	cin >> noItems;
+	//	Cell<int>* cell = new Cell<int>();
+	//	for (int i = 0; i < noItems; ++i) {
+	//		cin >> id;
+	//		// Do stuff with id
+	//		(*cell).insertAt(id, i);
+	//	}
+	//	CellNode<int, int> cellNode(intInfo, cell);
+	//	intMasterCell.insertCellNode(cellNode);
+	//}
+	//cout << intMasterCell << endl;
+	//intMasterCell = testMasterCell;
+	//cout << endl << "New Master Cell: " << endl << intMasterCell << endl;
 
 #pragma endregion HERE
 }

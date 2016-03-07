@@ -10,36 +10,22 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\proje
               DataType=char
           ]
   c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(647): note: see reference to class template instantiation 'Vector<char>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(70): warning C4250: 'Vector<CellNode<FirstDT,SecondDT>>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(70): warning C4250: 'Vector<CellNode<Vector<char>,int>>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
           with
           [
-              FirstDT=int,
-              SecondDT=int
-          ]
-          and
-          [
-              DataType=CellNode<int,int>
-          ]
-          and
-          [
-              DataType=CellNode<int,int>
+              DataType=CellNode<Vector<char>,int>
           ]
   c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(34): note: see declaration of 'ArrayClass<DataType>::operator []'
           with
           [
-              DataType=CellNode<int,int>
+              DataType=CellNode<Vector<char>,int>
           ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(384): note: see reference to class template instantiation 'Vector<CellNode<FirstDT,SecondDT>>' being compiled
-          with
-          [
-              FirstDT=int,
-              SecondDT=int
-          ]
-  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(689): note: see reference to class template instantiation 'MasterCell<int,int>' being compiled
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(657): warning C4101: 'buffer': unreferenced local variable
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(384): note: see reference to class template instantiation 'Vector<CellNode<Vector<char>,int>>' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(681): note: see reference to class template instantiation 'MasterCell<Vector<char>,int>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(653): warning C4101: 'intInfo': unreferenced local variable
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(477): warning C4715: 'Cell<int>::info': not all control paths return a value
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(519): warning C4715: 'Cell<int>::setNext': not all control paths return a value
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(596): warning C4715: 'CellNode<int,int>::returnMyInfo': not all control paths return a value
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(590): warning C4715: 'CellNode<int,int>::returnMyCell': not all control paths return a value
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(316): warning C4715: 'LLEnumerator<int>::nextElement': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(590): warning C4715: 'CellNode<Vector<char>,int>::returnMyCell': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(596): warning C4715: 'CellNode<Vector<char>,int>::returnMyInfo': not all control paths return a value
   Project3.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project3\Debug\Project3.exe
