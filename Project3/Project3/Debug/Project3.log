@@ -23,9 +23,9 @@ c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\proje
   c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(384): note: see reference to class template instantiation 'Vector<CellNode<Vector<char>,int>>' being compiled
   c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(681): note: see reference to class template instantiation 'MasterCell<Vector<char>,int>' being compiled
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(653): warning C4101: 'intInfo': unreferenced local variable
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(477): warning C4715: 'Cell<int>::info': not all control paths return a value
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(519): warning C4715: 'Cell<int>::setNext': not all control paths return a value
-c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(316): warning C4715: 'LLEnumerator<int>::nextElement': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(477): warning C4715: 'Cell<int>::info': not all control paths return a value
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(590): warning C4715: 'CellNode<Vector<char>,int>::returnMyCell': not all control paths return a value
 c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(596): warning C4715: 'CellNode<Vector<char>,int>::returnMyInfo': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project3\project3\project3.cpp(316): warning C4715: 'LLEnumerator<int>::nextElement': not all control paths return a value
   Project3.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project3\Debug\Project3.exe

@@ -648,17 +648,15 @@ void strEmpty(Vector<char>& str) {
 		str.remove(i);
 	}
 }
+
 int main() {
 
-	int intInfo;
-	int noItems;
-	int id;
-	Vector<char> charInfo;
-	char buffer;
-	char comma;
-
-
-
+	Vector<char> charInfo;											// Information used when reading InputFile_Part1
+	int intInfo;													// Information used when reading InputFile_Part2
+	int noItems;													// Number of id's to read
+	int id;															// Each ID that is read
+	char buffer;													// Used to read into charInfo
+	char comma;														// Junk variable
 
 	/* Project3_InputFile_Part1 */
 #pragma region BEGIN COMMENT
