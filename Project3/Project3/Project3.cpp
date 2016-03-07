@@ -264,11 +264,11 @@ public:
 	virtual void add(const DT& object) = 0;							// Adds object to the beginning of the list
 	virtual AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next) = 0; // Attaches next as _next field of list; returns old _next fiel
 	virtual void insertAt(const DT& newObj, int position) = 0;		// Inserts newObj so that it will be at node number position (counting the head node as 0)
-	virtual DT& infoAt(int position) = 0;							// Return the object in the linked list at the location specified by position
-	virtual DT& find(const DT& key) = 0;							// Returns a node matching key
-	virtual DT remove() = 0;										// Deletes the first node of the linked list, if any, and returns it
-	virtual DT removeAt(int position) = 0;							// Deletes the node matching key, if any, and returns it
-	virtual int size() = 0;											// Returns the number of nodes in the list
+	//virtual DT& infoAt(int position) = 0;							// Return the object in the linked list at the location specified by position
+	//virtual DT& find(const DT& key) = 0;							// Returns a node matching key
+	//virtual DT remove() = 0;										// Deletes the first node of the linked list, if any, and returns it
+	//virtual DT removeAt(int position) = 0;							// Deletes the node matching key, if any, and returns it
+	//virtual int size() = 0;											// Returns the number of nodes in the list
 	virtual Enumeration<DT>* enumerator();							// Returns an enumeration of the data contained in the list
 	virtual void display(ostream& s);								// Display the nodes of the linked list
 };
@@ -357,44 +357,39 @@ public:
 	void add(const DT& object);										// Adds a new cell to the front of the list with the supplied information
 	AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next);	// Sets the cell to the right to the supplied list
 	void insertAt(const DT& newObj, int position);					// Inserts a cell to the end of the list
-	DT& infoAt(int position);										// Retrieves the information at a particular cell
-	DT& find(const DT& key);
-	DT remove();
-	DT removeAt(int position);
-	int size();
-	~Cell();
-	void operator= (const Cell<DT>& cell);
+	~Cell();														// Destructor
+	void operator= (const Cell<DT>& cell);							// Copies information from supplied cell to current cell
 };
 
 template <class FirstDT, class SecondDT>
 class CellNode {
 protected:
-	FirstDT* _info;
-	Cell<SecondDT>* _myCell;
+	FirstDT* _info;													// Each CellNode's information
+	Cell<SecondDT>* _myCell;										// Link to the underlying cellNode's cell
 public:
-	CellNode();
-	CellNode(const FirstDT& info);
-	CellNode(const CellNode<FirstDT, SecondDT>& cellNode);
-	CellNode<FirstDT, SecondDT>(const FirstDT& info, Cell<SecondDT>* myCell);
-	~CellNode();
-	void copy(const CellNode<FirstDT, SecondDT>& cellNode);
-	Cell<SecondDT>& returnMyCell();
-	FirstDT& returnMyInfo();
-	void operator= (const CellNode<FirstDT, SecondDT>& tab);
+	CellNode();														// Constructs an empty cell node
+	CellNode(const FirstDT& info);									// Constructs a cell node with infromation
+	CellNode(const CellNode<FirstDT, SecondDT>& cellNode);			// Constructs a new cell node with the supplied cellNode
+	CellNode<FirstDT, SecondDT>(const FirstDT& info, Cell<SecondDT>* myCell); // Constructs a new cell with the supplied information and cell
+	~CellNode();													// Destructor
+	void copy(const CellNode<FirstDT, SecondDT>& cellNode);			// Copies infromation from supplied cell node to current cell
+	Cell<SecondDT>& returnMyCell();									// Returns the underlying cell
+	FirstDT& returnMyInfo();										// Returns the underlying information
+	void operator= (const CellNode<FirstDT, SecondDT>& cellnode);	// Copies information from supplied cellnode to current cellNode
 };
 
 template <class FirstDT, class SecondDT>
 class MasterCell {
 protected:
-	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;
+	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;				// The underlying resizable vector containing all of the cell nodes
 public:
-	MasterCell();
-	MasterCell(int vectorSize);
-	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);
-	~MasterCell();
-	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);
-	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);
-	Vector<CellNode<FirstDT, SecondDT>>& getVector();
+	MasterCell();													// Constructs an empty Master Cell
+	MasterCell(int vectorSize);										// Sets the capacity of the underlying vector
+	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);		// Constructs a master cell with a constructor including a cell Node
+	~MasterCell();													// Destructor
+	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);		// Inserts the cell node to the end of the underlying vector
+	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);// Copies information from the supplied masterCell to the current masterCell
+	Vector<CellNode<FirstDT, SecondDT>>& getVector();				// Retrieves the vector
 };
 
 #pragma region Cell
@@ -485,45 +480,6 @@ AbstractLinkedList<DT>* Cell<DT>::next() {
 	return _right;
 }
 template <class DT>
-int Cell<DT>::size() {
-	if (_right == NULL) {
-		if (_value == NULL) {
-			return 0;
-		}
-		else {
-			return 1;
-		}
-	}
-	else return 1 + _right->size();
-}
-template <class DT>
-DT& Cell<DT>::find(const DT& key) {
-	if (!isEmpty()) {
-		if (key == *_value) {
-			return *_value;
-		}
-		if (_right == NULL) {
-
-		}
-		return _right->find(key);
-	}
-	else {
-
-	}
-}
-template <class DT>
-DT& Cell<DT>::infoAt(int position) {
-	if (!isEmpty()) {
-		if (position == 0) {
-			return *_value;
-		}
-		if (_right != NULL) {
-			return _right->infoAt(position - 1);
-		}
-	}
-
-}
-template <class DT>
 void Cell<DT>::add(const DT& object) {
 	if (_value == NULL) {
 		_value = new DT(object);
@@ -558,40 +514,6 @@ AbstractLinkedList<DT>* Cell<DT>::setNext(AbstractLinkedList<DT>* next) {
 		AbstractLinkedList<DT>* temp = _right;
 		_right = dynamic_cast<Cell<DT>*>(next);
 		return temp;
-	}
-
-}
-template <class DT>
-DT Cell<DT>::remove() {
-	if (!isEmpty()) {
-		DT temp = *_value;
-		delete _value;
-		if (_right == NULL) {
-			_value = NULL;
-		}
-		else {
-			Cell<DT>* oldNext = _right;
-			_value = _right->_value;
-			_right = _right->_right;
-			// Remove stray pointers to linked list
-			oldNext->_value = NULL;
-			oldNext->_right = NULL;
-			delete oldNext;
-		}
-		return temp;
-	}
-
-}
-template <class DT>
-DT Cell<DT>::removeAt(int position) {
-	if (!isEmpty()) {
-		if (position == 0) {
-			return remove();
-		}
-		if (_right == NULL) {
-
-		}
-		return _right->removeAt(position - 1);
 	}
 
 }
@@ -702,7 +624,7 @@ void MasterCell<FirstDT, SecondDT>::insertCellNode(CellNode<FirstDT, SecondDT>& 
 }
 template<class FirstDT, class SecondDT>
 void MasterCell<FirstDT, SecondDT>::operator= (const MasterCell<FirstDT, SecondDT>& masterCell) {
-
+	_myCellNodes = masterCell._myCellNodes;
 }
 template <class FirstDT, class SecondDT>
 Vector<CellNode<FirstDT, SecondDT>>& MasterCell<FirstDT, SecondDT>::getVector() {
@@ -711,7 +633,10 @@ Vector<CellNode<FirstDT, SecondDT>>& MasterCell<FirstDT, SecondDT>::getVector() 
 template <class FirstDT, class SecondDT>
 ostream& operator<< (ostream& s, MasterCell<FirstDT, SecondDT>& masterCell) {
 	for (int i = 0; i < masterCell.getVector().size(); ++i) {
-		s << masterCell.getVector()[i] << endl;
+		s << masterCell.getVector()[i];
+		if (i + 1 != masterCell.getVector().size()) {
+			s << endl;
+		}
 	}
 	return s;
 }
@@ -732,18 +657,37 @@ int main() {
 	char buffer;
 	char comma;
 
-#pragma region BEGIN COMMENT
+
 	/* Project3_InputFile_Part1 */
+#pragma region BEGIN COMMENT
+//MasterCell<Vector<char>, int> charMasterCell;
+//while (cin >> buffer) {
+//	strEmpty(charInfo);
+//	charInfo.add(buffer);
+//	do {
+//		cin.get(buffer);
+//		charInfo.add(buffer);
+//	} while (cin.peek() != ',');
 
-	MasterCell<Vector<char>, int> charMasterCell;
-	while (cin >> buffer) {
-		strEmpty(charInfo);
-		charInfo.add(buffer);
-		do {
-			cin.get(buffer);
-			charInfo.add(buffer);
-		} while (cin.peek() != ',');
+//	cin.get(comma);
+//	cin >> noItems;
+//	Cell<int>* cell = new Cell<int>();
+//	for (int i = 0; i < noItems; ++i) {
+//		cin >> id;
+//		// Do stuff with id
+//		(*cell).insertAt(id, i);
+//	}
+//	CellNode<Vector<char>, int> cellNode(charInfo, cell);
+//	charMasterCell.insertCellNode(cellNode);
+//}
+//cout << charMasterCell << endl;
+#pragma endregion HERE
 
+
+	/* Project3_InputFile_Part2 */
+#pragma region BEGIN COMMENT
+	MasterCell<int, int> intMasterCell;
+	while (cin >> intInfo) {
 		cin.get(comma);
 		cin >> noItems;
 		Cell<int>* cell = new Cell<int>();
@@ -752,29 +696,10 @@ int main() {
 			// Do stuff with id
 			(*cell).insertAt(id, i);
 		}
-		CellNode<Vector<char>, int> cellNode(charInfo, cell);
-		charMasterCell.insertCellNode(cellNode);
+		CellNode<int, int> cellNode(intInfo, cell);
+		intMasterCell.insertCellNode(cellNode);
 	}
-	cout << charMasterCell << endl;
-#pragma endregion HERE
-
-#pragma region BEGIN COMMENT
-	/* Project3_InputFile_Part2 */
-
-	//MasterCell<int, int> intMasterCell;
-	//while (cin >> intInfo) {
-	//	cin.get(comma);
-	//	cin >> noItems;
-	//	Cell<int>* cell = new Cell<int>();
-		//for (int i = 0; i < noItems; ++i) {
-		//	cin >> id;
-		//	// Do stuff with id
-		//	(*cell).insertAt(id, i);
-		//}
-	//	CellNode<int, int> cellNode(intInfo, cell);
-	//	intMasterCell.insertCellNode(cellNode);
-	//}
-	//cout << intMasterCell << endl;
+	cout << intMasterCell << endl;
 
 #pragma endregion HERE
 }
