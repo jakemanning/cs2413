@@ -1,0 +1,57 @@
+﻿  Project4.cpp
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(70): warning C4250: 'Vector<char>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              DataType=char
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(34): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=char
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(754): note: see reference to class template instantiation 'Vector<char>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(70): warning C4250: 'Vector<CellNode<Vector<char>,int>>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              DataType=CellNode<Vector<char>,int>
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(34): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=CellNode<Vector<char>,int>
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(389): note: see reference to class template instantiation 'Vector<CellNode<Vector<char>,int>>' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(786): note: see reference to class template instantiation 'MasterCell<Vector<char>,int>' being compiled
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(70): warning C4250: 'Vector<FirstDT>': inherits 'ArrayClass<DataType>::ArrayClass<DataType>::operator []' via dominance
+          with
+          [
+              FirstDT=Vector<char>
+          ]
+          and
+          [
+              DataType=Vector<char>
+          ]
+          and
+          [
+              DataType=Vector<char>
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(34): note: see declaration of 'ArrayClass<DataType>::operator []'
+          with
+          [
+              DataType=Vector<char>
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(812): note: see reference to class template instantiation 'Vector<FirstDT>' being compiled
+          with
+          [
+              FirstDT=Vector<char>
+          ]
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(762): warning C4101: 'intInfo': unreferenced local variable
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(486): warning C4715: 'Cell<int>::info': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(671): warning C4715: 'CellNode<Vector<char>,int>::returnMyCell': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(677): warning C4715: 'CellNode<Vector<char>,int>::returnMyInfo': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(528): warning C4715: 'Cell<int>::setNext': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(566): warning C4715: 'Cell<int>::infoAt': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(587): warning C4715: 'Cell<int>::remove': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(600): warning C4715: 'Cell<int>::removeAt': not all control paths return a value
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project4\project4\project4.cpp(316): warning C4715: 'LLEnumerator<int>::nextElement': not all control paths return a value
+  Project4.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project4\Debug\Project4.exe

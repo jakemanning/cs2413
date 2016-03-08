@@ -2,12 +2,12 @@
 using namespace std;
 
 #pragma region Exceptions
-class Exception { };												// Generic, all exceptions derive from this
-class IncorrectTab : public Exception { };							// In case the user asked for a browser tab that doesn't exist yet
-class IncorrectAction : public Exception { };						// In case the user asked for an action that won't work
-class ArrayException : public Exception { };						// Genric array exception, all array exceptions derive from
-class ArrayMemoryException : public ArrayException { };				// In case the array created causes an error
-class ArrayBoundsException : public ArrayException { };				// In case the user asked for an index that was out of bounds
+class Exception { };																	// Generic, all exceptions derive from this
+class IncorrectTab : public Exception { };												// In case the user asked for a browser tab that doesn't exist yet
+class IncorrectAction : public Exception { };											// In case the user asked for an action that won't work
+class ArrayException : public Exception { };											// Genric array exception, all array exceptions derive from
+class ArrayMemoryException : public ArrayException { };									// In case the array created causes an error
+class ArrayBoundsException : public ArrayException { };									// In case the user asked for an index that was out of bounds
 #pragma endregion
 
 #pragma region array
@@ -251,26 +251,26 @@ void Vector<DataType>::remove(int index) {
 template <class DT>
 class Enumeration {
 public:
-	virtual bool hasMoreElements() = 0; // Boolean method which determines whether there are any more elements in the data structure being Enumerated
-	virtual DT& nextElement() = 0; // Returns the object which is the next element
+	virtual bool hasMoreElements() = 0;													// Boolean method which determines whether there are any more elements in the data structure being Enumerated
+	virtual DT& nextElement() = 0;														// Returns the object which is the next element
 };
 
 template <class DT>
 class AbstractLinkedList {
 public:
-	virtual DT& info() = 0;											// Returns the object in the head of the linked list
-	virtual AbstractLinkedList<DT>* next() = 0;						// Returns the LinkedLIst pointed by this LinkedList
-	virtual bool isEmpty() = 0;										// Returns true if the list is empty
-	virtual void add(const DT& object) = 0;							// Adds object to the beginning of the list
-	virtual AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next) = 0; // Attaches next as _next field of list; returns old _next fiel
-	virtual void insertAt(const DT& newObj, int position) = 0;		// Inserts newObj so that it will be at node number position (counting the head node as 0)
-																	//virtual DT& infoAt(int position) = 0;							// Return the object in the linked list at the location specified by position
-																	//virtual DT& find(const DT& key) = 0;							// Returns a node matching key
-																	//virtual DT remove() = 0;										// Deletes the first node of the linked list, if any, and returns it
-																	//virtual DT removeAt(int position) = 0;							// Deletes the node matching key, if any, and returns it
-																	//virtual int size() = 0;											// Returns the number of nodes in the list
-	virtual Enumeration<DT>* enumerator();							// Returns an enumeration of the data contained in the list
-	virtual void display(ostream& s);								// Display the nodes of the linked list
+	virtual DT& info() = 0;																// Returns the object in the head of the linked list
+	virtual AbstractLinkedList<DT>* next() = 0;											// Returns the LinkedLIst pointed by this LinkedList
+	virtual bool isEmpty() = 0;															// Returns true if the list is empty
+	virtual void add(const DT& object) = 0;												// Adds object to the beginning of the list
+	virtual AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next) = 0;			// Attaches next as _next field of list; returns old _next fiel
+	virtual void insertAt(const DT& newObj, int position) = 0;							// Inserts newObj so that it will be at node number position (counting the head node as 0)
+	virtual DT& infoAt(int position) = 0;												// Return the object in the linked list at the location specified by position
+	virtual DT& find(const DT& key) = 0;												// Returns a node matching key
+	virtual DT remove() = 0;															// Deletes the first node of the linked list, if any, and returns it
+	virtual DT removeAt(int position) = 0;												// Deletes the node matching key, if any, and returns it
+	virtual int size() = 0;																// Returns the number of nodes in the list
+	virtual Enumeration<DT>* enumerator();												// Returns an enumeration of the data contained in the list
+	virtual void display(ostream& s);													// Display the nodes of the linked list
 };
 
 template <class DT>
@@ -343,53 +343,62 @@ ostream& operator<< (ostream& s, AbstractLinkedList<DT>& LL) {
 template <class DT>
 class Cell : virtual public AbstractLinkedList<DT> {
 protected:
-	DT* _value;														// Each cell's value
-	Cell<DT>* _right;												// The reference to the cell to the right
-	void Cell<DT>::copy(const Cell<DT>& linkedList);				// Copies all information from given cell to current cell and deletes given cell
+	DT* _value;																			// Each cell's value
+	Cell<DT>* _right;																	// The reference to the cell to the right
+	void Cell<DT>::copy(const Cell<DT>& linkedList);									// Copies all information from given cell to current cell and deletes given cell
 public:
-	Cell();															// Constructs a new cell
-	Cell(const DT& info);											// Constructs a new cell with the supplied information
-	Cell(const DT& info, Cell<DT>* cell);							// Constructs a new cell with the supplied information and the cell to the riht
-	Cell(const Cell<DT>& linkedList);								// Constructs a new Cell with the supplied copy constructor
-	AbstractLinkedList<DT>* next();									// The next cell in the list
-	DT& info();														// The underlying node's information
-	bool isEmpty();													// Checks whether the info in the cell is null
-	void add(const DT& object);										// Adds a new cell to the front of the list with the supplied information
-	AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next);	// Sets the cell to the right to the supplied list
-	void insertAt(const DT& newObj, int position);					// Inserts a cell to the end of the list
-	~Cell();														// Destructor
-	void operator= (const Cell<DT>& cell);							// Copies information from supplied cell to current cell
+	Cell();																				// Constructs a new cell
+	Cell(const DT& info);																// Constructs a new cell with the supplied information
+	Cell(const DT& info, Cell<DT>* cell);												// Constructs a new cell with the supplied information and the cell to the riht
+	Cell(const Cell<DT>& linkedList);													// Constructs a new Cell with the supplied copy constructor
+	AbstractLinkedList<DT>* next();														// The next cell in the list
+	DT& info();																			// The underlying node's information
+	bool isEmpty();																		// Checks whether the info in the cell is null
+	void add(const DT& object);															// Adds a new cell to the front of the list with the supplied information
+	AbstractLinkedList<DT>* setNext(AbstractLinkedList<DT>* next);						// Sets the cell to the right to the supplied list
+	void insertAt(const DT& newObj, int position);										// Inserts a cell to the end of the list
+	DT& infoAt(int position);															// Return the value in the linked list at the location specified by position
+	DT& find(const DT& key);															// Returns a node matching key
+	DT remove();																		// Deletes the first node of the linked list, if any, and returns it
+	DT removeAt(int position);															// Deletes the node matching key, if any, and returns it
+	int size();																			// Returns the number of cells in the list
+	~Cell();																			// Destructor
+	void operator= (const Cell<DT>& cell);												// Copies information from supplied cell to current cell
 };
 
 template <class FirstDT, class SecondDT>
 class CellNode {
 protected:
-	FirstDT* _info;													// Each CellNode's information
-	Cell<SecondDT>* _myCell;										// Link to the underlying cellNode's cell
+	FirstDT* _info;																		// Each CellNode's information
+	Cell<SecondDT>* _myCell;															// Link to the underlying cellNode's cell
 public:
-	CellNode();														// Constructs an empty cell node
-	CellNode(const FirstDT& info);									// Constructs a cell node with infromation
-	CellNode(const CellNode<FirstDT, SecondDT>& cellNode);			// Constructs a new cell node with the supplied cellNode
-	CellNode<FirstDT, SecondDT>(const FirstDT& info, Cell<SecondDT>* myCell); // Constructs a new cell with the supplied information and cell
-	~CellNode();													// Destructor
-	void copy(const CellNode<FirstDT, SecondDT>& cellNode);			// Copies infromation from supplied cell node to current cell
-	Cell<SecondDT>& returnMyCell();									// Returns the underlying cell
-	FirstDT& returnMyInfo();										// Returns the underlying information
-	void operator= (const CellNode<FirstDT, SecondDT>& cellnode);	// Copies information from supplied cellnode to current cellNode
+	CellNode();																			// Constructs an empty cell node
+	CellNode(const FirstDT& info);														// Constructs a cell node with infromation
+	CellNode(const CellNode<FirstDT, SecondDT>& cellNode);								// Constructs a new cell node with the supplied cellNode
+	CellNode<FirstDT, SecondDT>(const FirstDT& info, Cell<SecondDT>* myCell);			// Constructs a new cell with the supplied information and cell
+	~CellNode();																		// Destructor
+	void copy(const CellNode<FirstDT, SecondDT>& cellNode);								// Copies infromation from supplied cell node to current cell
+	Cell<SecondDT>& returnMyCell();														// Returns the underlying cell
+	FirstDT& returnMyInfo();															// Returns the underlying information
+	void operator= (const CellNode<FirstDT, SecondDT>& cellnode);						// Copies information from supplied cellnode to current cellNode
 };
 
 template <class FirstDT, class SecondDT>
 class MasterCell {
 protected:
-	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;				// The underlying resizable vector containing all of the cell nodes
+	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;												// The underlying resizable vector containing all of the cell nodes
 public:
-	MasterCell();													// Constructs an empty Master Cell
-	MasterCell(int vectorSize);										// Sets the capacity of the underlying vector
-	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);		// Constructs a master cell with a constructor including a cell Node
-	~MasterCell();													// Destructor
-	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);		// Inserts the cell node to the end of the underlying vector
-	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);// Copies information from the supplied masterCell to the current masterCell
-	Vector<CellNode<FirstDT, SecondDT>>& getVector();				// Retrieves the vector
+	MasterCell();																					// Constructs an empty Master Cell
+	MasterCell(int vectorSize);																		// Sets the capacity of the underlying vector
+	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);										// Constructs a master cell with a constructor including a cell Node
+	~MasterCell();																					// Destructor
+	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);										// Inserts the cell node to the end of the underlying vector
+	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);								// Copies information from the supplied masterCell to the current masterCell
+	Vector<CellNode<FirstDT, SecondDT>>& getVector();												// Retrieves the vector
+	Vector<FirstDT>& findKeywords(int keyword);														// Returns an array of strings that matches an input value
+	Vector<int>& and(const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are common to both
+	Vector<int>& or (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are in either of them
+	Vector<int>& xor(const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are not common in both
 };
 
 #pragma region Cell
@@ -517,6 +526,78 @@ AbstractLinkedList<DT>* Cell<DT>::setNext(AbstractLinkedList<DT>* next) {
 	}
 
 }
+template <class DT>
+int Cell<DT>::size() {
+	if (_right == NULL) {
+		if (_value == NULL) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
+	}
+	else return 1 + _right->size();
+}
+template <class DT>
+DT& Cell<DT>::find(const DT& key) {
+	if (!isEmpty()) {
+		if (key == *_value) {
+			return *_value;
+		}
+		if (_right != NULL) {
+			return _right->find(key);
+		}
+	}
+	int* bad = new int(-1);
+	return *bad;
+
+}
+template <class DT>
+DT& Cell<DT>::infoAt(int position) {
+	if (!isEmpty()) {
+		if (position == 0) {
+			return *_value;
+		}
+		if (_right != NULL) {
+			return _right->infoAt(position - 1);
+		}
+	}
+
+}
+template <class DT>
+DT Cell<DT>::remove() {
+	if (!isEmpty()) {
+		DT temp = *_value;
+		delete _value;
+		if (_right == NULL) {
+			_value = NULL;
+		}
+		else {
+			Cell<DT>* oldNext = _right;
+			_value = _right->_value;
+			_right = _right->_right;
+			// Remove stray pointers to linked list
+			oldNext->_value = NULL;
+			oldNext->_right = NULL;
+			delete oldNext;
+		}
+		return temp;
+	}
+
+}
+template <class DT>
+DT Cell<DT>::removeAt(int position) {
+	if (!isEmpty()) {
+		if (position == 0) {
+			return remove();
+		}
+		if (_right == NULL) {
+
+		}
+		return _right->removeAt(position - 1);
+	}
+
+}
 #pragma endregion Methods
 
 #pragma region CellNode
@@ -630,6 +711,32 @@ template <class FirstDT, class SecondDT>
 Vector<CellNode<FirstDT, SecondDT>>& MasterCell<FirstDT, SecondDT>::getVector() {
 	return _myCellNodes;
 }
+template<class FirstDT, class SecondDT>
+Vector<FirstDT>& MasterCell<FirstDT, SecondDT>::findKeywords(int keyword)
+{
+	Vector<FirstDT>* strings = new Vector<FirstDT>(_myCellNodes.size());
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		if (_myCellNodes[i].returnMyCell().find(keyword) != -1) {
+			(*strings).add(_myCellNodes[i].returnMyInfo());
+		}
+	}
+	return *strings;
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: and (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
+{
+	// TODO: insert return statement here
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: or (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
+{
+	// TODO: insert return statement here
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
+{
+	// TODO: insert return statement here
+}
 template <class FirstDT, class SecondDT>
 ostream& operator<< (ostream& s, MasterCell<FirstDT, SecondDT>& masterCell) {
 	for (int i = 0; i < masterCell.getVector().size(); ++i) {
@@ -651,20 +758,20 @@ void strEmpty(Vector<char>& str) {
 
 int main() {
 
-	Vector<char> charInfo;											// Information used when reading InputFile_Part1
-	int intInfo;													// Information used when reading InputFile_Part2
-	int noItems;													// Number of id's to read
-	int id;															// Each ID that is read
-	char buffer;													// Used to read into charInfo
-	char comma;														// Junk variable
+	Vector<char> charInfo;																// Information used when reading InputFile_Part1
+	int intInfo;																		// Information used when reading InputFile_Part2
+	int noItems;																		// Number of id's to read
+	int id;																				// Each ID that is read
+	char buffer;																		// Used to read into charInfo
+	char comma;																			// Junk variable
 
-																	/* Project3_InputFile_Part1 */
+	/* Project3_InputFile_Part1 */
 #pragma region BEGIN COMMENT
-																	/* Begin Test Information*/
+	/* Begin Test Information*/
 	Vector<char> firstTestCellInfo;
 	Vector<char> secondTestCellInfo;
 	char test[] = { 'a','b','c','d','e' };
-	char firstTestInfo[] = { 1,2,3,4,5 };
+	int firstTestInfo[] = { 1,2,3,4,5 };
 	int secondTestInfo[] = { 100,200,300,400,500 };
 	Cell<int>* firstTestCell = new Cell<int>();
 	Cell<int>* secondTestCell = new Cell<int>();
@@ -701,8 +808,12 @@ int main() {
 		charMasterCell.insertCellNode(cellNode);
 	}
 	cout << charMasterCell << endl;
+	int keyword = 456;
+	cout << endl << "Keywords that contain an id value of " << keyword << ": " << charMasterCell.findKeywords(keyword) << endl;
 	charMasterCell = testMasterCell;
 	cout << endl << "New Master Cell: " << endl << charMasterCell << endl;
+
+
 #pragma endregion HERE
 
 
