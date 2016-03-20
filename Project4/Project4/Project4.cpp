@@ -59,6 +59,7 @@ public:
 	virtual ~Vector();												// Destructor
 	void operator= (const Vector<DataType>& v);						// Overloads equals operator to copy information from the given Vector
 	void operator= (const ArrayClass<DataType>& ac);				// Overloads equals operator to copy information from the given ArrayClass
+	bool operator== (Vector<DataType>& v);					// Overloads equality operator to check the contents of the two vectors
 	virtual void insert(const DataType& item, int index);			// Shifts all items up to the current array from the given index, and inserts item into given index
 	virtual void remove(int index);									// Removes item at given index, shifts down other objects, and decrements active array size
 	virtual void add(const DataType& item);							// Appends an object to the underlying Array
@@ -66,7 +67,8 @@ public:
 	virtual int capacity() const;									// Returns capacity of underlying array
 	virtual int incFactor() const;									// Returns current increment factor
 	virtual void setIncFactor(int f);								// Resets the incedent factor to necessary size
-	void setCapacity(int c);										// Resizes underlying array to the specified capacity
+	void setCapacity(int c);										// Resizes underlying array to the specified capacit
+	bool contains(const DataType& i);								// Checks whether the vector contains a member of the specified dataType
 };
 #pragma region array
 template <class DataType>
@@ -179,6 +181,19 @@ void Vector<DataType>::operator= (const ArrayClass<DataType>& ac) {
 	_incFactor = (_currSize + 1) / 2;
 }
 template <class DataType>
+bool Vector<DataType>::operator== (Vector<DataType>& v) {
+	if (this->paObject == NULL || v.paObject == NULL || this->_currSize != v._currSize) {
+		return false;
+	}
+	for (int i = 0; i < this->_currSize; ++i) {
+		if (paObject[i] != v[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+template <class DataType>
 int Vector<DataType>::size() const {
 	return _currSize;
 }
@@ -242,6 +257,15 @@ void Vector<DataType>::remove(int index) {
 		(*this)[i] = (*this)[i + 1];
 	}
 	--_currSize;
+}
+template <class DataType>
+bool Vector<DataType>::contains(const DataType& var) {
+	for (int i = 0; i < _currSize; ++i) {
+		if (paObject[i] == var) {
+			return true;
+		}
+	}
+	return false;
 }
 #pragma endregion Methods
 
@@ -396,9 +420,9 @@ public:
 	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);								// Copies information from the supplied masterCell to the current masterCell
 	Vector<CellNode<FirstDT, SecondDT>>& getVector();												// Retrieves the vector
 	Vector<FirstDT>& findKeywords(int keyword);														// Returns an array of strings that matches an input value
-	Vector<int>& and(const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are common to both
-	Vector<int>& or (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are in either of them
-	Vector<int>& xor(const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword);	// Takes two keywords and returns all integers that are not common in both
+	Vector<int>& and(FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are common to both
+	Vector<int>& or (FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are in either of them
+	Vector<int>& xor(FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are not common in both
 };
 
 #pragma region Cell
@@ -548,8 +572,8 @@ DT& Cell<DT>::find(const DT& key) {
 			return _right->find(key);
 		}
 	}
-	int* bad = new int(-1);
-	return *bad;
+	int* notFound = new int(-1);
+	return *notFound;
 
 }
 template <class DT>
@@ -711,6 +735,16 @@ template <class FirstDT, class SecondDT>
 Vector<CellNode<FirstDT, SecondDT>>& MasterCell<FirstDT, SecondDT>::getVector() {
 	return _myCellNodes;
 }
+template <class FirstDT, class SecondDT>
+ostream& operator<< (ostream& s, MasterCell<FirstDT, SecondDT>& masterCell) {
+	for (int i = 0; i < masterCell.getVector().size(); ++i) {
+		s << masterCell.getVector()[i];
+		if (i + 1 != masterCell.getVector().size()) {
+			s << endl;
+		}
+	}
+	return s;
+}
 template<class FirstDT, class SecondDT>
 Vector<FirstDT>& MasterCell<FirstDT, SecondDT>::findKeywords(int keyword)
 {
@@ -723,29 +757,100 @@ Vector<FirstDT>& MasterCell<FirstDT, SecondDT>::findKeywords(int keyword)
 	return *strings;
 }
 template<class FirstDT, class SecondDT>
-Vector<int>& MasterCell<FirstDT, SecondDT>:: and (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
+Vector<int>& MasterCell<FirstDT, SecondDT>:: and (FirstDT& firstKeyword, FirstDT& secondKeyword)
 {
-	// TODO: insert return statement here
-}
-template<class FirstDT, class SecondDT>
-Vector<int>& MasterCell<FirstDT, SecondDT>:: or (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
-{
-	// TODO: insert return statement here
-}
-template<class FirstDT, class SecondDT>
-Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (const Vector<FirstDT>& firstKeyword, const Vector<FirstDT>& secondKeyword)
-{
-	// TODO: insert return statement here
-}
-template <class FirstDT, class SecondDT>
-ostream& operator<< (ostream& s, MasterCell<FirstDT, SecondDT>& masterCell) {
-	for (int i = 0; i < masterCell.getVector().size(); ++i) {
-		s << masterCell.getVector()[i];
-		if (i + 1 != masterCell.getVector().size()) {
-			s << endl;
+	int firstKeywordIndex = -1, secondKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+			else if (_myCellNodes[i].returnMyInfo() == secondKeyword) {
+				secondKeywordIndex = i;
+			}
+
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
 		}
 	}
-	return s;
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (_myCellNodes[secondKeywordIndex].returnMyCell().find(infoAtIndex) != -1) {
+			(*ids).add(infoAtIndex);
+		}
+	}
+	return *ids;
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: or (FirstDT& firstKeyword, FirstDT& secondKeyword)
+{
+	int firstKeywordIndex = -1, secondKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+			else if (_myCellNodes[i].returnMyInfo() == secondKeyword) {
+				secondKeywordIndex = i;
+			}
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
+		}
+	}
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int firstInfoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (!(*ids).contains(firstInfoAtIndex)) {
+			(*ids).add(firstInfoAtIndex);
+		}
+	}
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int secondInfoAtIndex = _myCellNodes[secondKeywordIndex].returnMyCell().infoAt(index);
+		if (!(*ids).contains(secondInfoAtIndex)) {
+			(*ids).add(secondInfoAtIndex);
+		}
+	}
+	return *ids;
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (FirstDT& firstKeyword, FirstDT& secondKeyword)
+{
+	int firstKeywordIndex = -1, secondKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+			else if (_myCellNodes[i].returnMyInfo() == secondKeyword) {
+				secondKeywordIndex = i;
+			}
+
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
+		}
+	}
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (_myCellNodes[secondKeywordIndex].returnMyCell().find(infoAtIndex) == -1) {
+			if (!(*ids).contains(infoAtIndex)) {
+				(*ids).add(infoAtIndex);
+			}
+		}
+	}
+	for (int index = 0; index < _myCellNodes[secondKeywordIndex].returnMyCell().size(); ++index) {
+		int infoAtIndex = _myCellNodes[secondKeywordIndex].returnMyCell().infoAt(index);
+		if (_myCellNodes[firstKeywordIndex].returnMyCell().find(infoAtIndex) == -1) {
+			if (!(*ids).contains(infoAtIndex)) {
+				(*ids).add(infoAtIndex);
+			}
+		}
+	}
+	return *ids;
 }
 #pragma endregion Methods
 #pragma endregion Definitions
@@ -757,35 +862,13 @@ void strEmpty(Vector<char>& str) {
 }
 
 int main() {
-
 	Vector<char> charInfo;																// Information used when reading InputFile_Part1
 	int intInfo;																		// Information used when reading InputFile_Part2
 	int noItems;																		// Number of id's to read
 	int id;																				// Each ID that is read
+	int noTimes;
 	char buffer;																		// Used to read into charInfo
 	char comma;																			// Junk variable
-
-	/* Project3_InputFile_Part1 */
-#pragma region BEGIN COMMENT
-	/* Begin Test Information*/
-	Vector<char> firstTestCellInfo;
-	Vector<char> secondTestCellInfo;
-	char test[] = { 'a','b','c','d','e' };
-	int firstTestInfo[] = { 1,2,3,4,5 };
-	int secondTestInfo[] = { 100,200,300,400,500 };
-	Cell<int>* firstTestCell = new Cell<int>();
-	Cell<int>* secondTestCell = new Cell<int>();
-	for (int index = 0; index < 5; ++index) {
-		firstTestCellInfo.add(test[index]);
-		secondTestCellInfo.add(test[4 - index]);
-		(*firstTestCell).insertAt(firstTestInfo[index], index);
-		(*secondTestCell).insertAt(secondTestInfo[index], index);
-	}
-	CellNode<Vector<char>, int> firstTestCellNode(firstTestCellInfo, firstTestCell);
-	CellNode<Vector<char>, int> secondTestCellNode(secondTestCellInfo, secondTestCell);
-	MasterCell<Vector<char>, int> testMasterCell(firstTestCellNode);
-	testMasterCell.insertCellNode(secondTestCellNode);
-	/* End Test Information*/
 
 	MasterCell<Vector<char>, int> charMasterCell;
 	while (cin >> buffer) {
@@ -809,49 +892,17 @@ int main() {
 	}
 	cout << charMasterCell << endl;
 	int keyword = 456;
-	cout << endl << "Keywords that contain an id value of " << keyword << ": " << charMasterCell.findKeywords(keyword) << endl;
-	charMasterCell = testMasterCell;
-	cout << endl << "New Master Cell: " << endl << charMasterCell << endl;
+	//cout << endl << "Keywords that contain an id value of " << keyword << ": " << charMasterCell.findKeywords(keyword) << endl;
+	char one[] = { 'D','i','s','c','r','e','t','e',' ','M','a','t','h','e','m','a','t','i','c','s','\0' };
+	char two[] = { 'D','e','s','i','g','n',' ','o','f',' ','L','o','g','i','c',' ','C','i','r','c','u','i','t','s','\0' };
+	Vector<char> oneTest(21);
+	Vector<char> twoTest(21);
+	for (int i = 0; one[i] != '\0'; ++i) {
+		oneTest.add(one[i]);
+	}
+	for (int i = 0; two[i] != '\0'; ++i) {
+		twoTest.add(two[i]);
+	}
+	charMasterCell. xor (oneTest, twoTest);
 
-
-#pragma endregion HERE
-
-
-	/* Project3_InputFile_Part2 */
-#pragma region BEGIN COMMENT
-	///* Begin Test Information */
-	//int firstTestCellInfo = 12;
-	//int secondTestCellInfo = 34;
-	//int firstTestInfo[] = { 1,2,3,4,5 };
-	//int secondTestInfo[] = { 100,200,300,400,500 };
-	//Cell<int>* firstTestCell = new Cell<int>();
-	//Cell<int>* secondTestCell = new Cell<int>();
-	//for (int index = 0; index < 5; ++index) {
-	//	(*firstTestCell).insertAt(firstTestInfo[index], index);
-	//	(*secondTestCell).insertAt(secondTestInfo[index], index);
-	//}
-	//CellNode<int, int> firstTestCellNode(firstTestCellInfo, firstTestCell);
-	//CellNode<int, int> secondTestCellNode(secondTestCellInfo, secondTestCell);
-	//MasterCell<int, int> testMasterCell(firstTestCellNode);
-	//testMasterCell.insertCellNode(secondTestCellNode);
-	///* End Test Information*/
-	//
-	//MasterCell<int, int> intMasterCell;
-	//while (cin >> intInfo) {
-	//	cin.get(comma);
-	//	cin >> noItems;
-	//	Cell<int>* cell = new Cell<int>();
-	//	for (int i = 0; i < noItems; ++i) {
-	//		cin >> id;
-	//		// Do stuff with id
-	//		(*cell).insertAt(id, i);
-	//	}
-	//	CellNode<int, int> cellNode(intInfo, cell);
-	//	intMasterCell.insertCellNode(cellNode);
-	//}
-	//cout << intMasterCell << endl;
-	//intMasterCell = testMasterCell;
-	//cout << endl << "New Master Cell: " << endl << intMasterCell << endl;
-
-#pragma endregion HERE
 }
