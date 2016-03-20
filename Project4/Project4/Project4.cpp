@@ -11,64 +11,64 @@ class ArrayBoundsException : public ArrayException { };									// In case the u
 #pragma endregion
 
 #pragma region array
-																	// Purely virtual data type from which arrays derive
+																						// Purely virtual data type from which arrays derive
 template <class DataType>
 class AbstractArrayClass {
 public:
-	virtual int size() const = 0;									// Abstract template for size
-	virtual DataType& operator[] (int k) = 0;						// Abstract template for array index overloading
+	virtual int size() const = 0;														// Abstract template for size
+	virtual DataType& operator[] (int k) = 0;											// Abstract template for array index overloading
 };
 template <class DataType>
-class ArrayClass : virtual public AbstractArrayClass<DataType> {	// Encapsulation of a DataType array
+class ArrayClass : virtual public AbstractArrayClass<DataType> {						// Encapsulation of a DataType array
 protected:
-	DataType *paObject;												// Pointer to an array of DataType
-	int _size;														// Capacity of the array
-	void copy(const ArrayClass<DataType>& ac);						// Allows for a copy constructor to take data from an external ArrayClass
+	DataType *paObject;																	// Pointer to an array of DataType
+	int _size;																			// Capacity of the array
+	void copy(const ArrayClass<DataType>& ac);											// Allows for a copy constructor to take data from an external ArrayClass
 public:
-	ArrayClass();													// Default constructor, creates a array of size 1
-	ArrayClass(int n);												// Initializer, creates an array of size n
-	ArrayClass(int n, const DataType& val);							// Initializer, fills an array of size n with val
-	ArrayClass(const ArrayClass<DataType>& ac);						// Copy constructor, transfers data from an external ArrayClass, and copies data into self
-	virtual ~ArrayClass();											// Destructor
-	virtual int size() const;										// Encapsulated method to access capacity
-	virtual DataType& operator [] (int k);							// Overloads bracket operator to access data at index of k
-	void operator=(const ArrayClass<DataType>& ac);					// Overloads equals operator to copy information from the given ArrayClass
+	ArrayClass();																		// Default constructor, creates a array of size 1
+	ArrayClass(int n);																	// Initializer, creates an array of size n
+	ArrayClass(int n, const DataType& val);												// Initializer, fills an array of size n with val
+	ArrayClass(const ArrayClass<DataType>& ac);											// Copy constructor, transfers data from an external ArrayClass, and copies data into self
+	virtual ~ArrayClass();																// Destructor
+	virtual int size() const;															// Encapsulated method to access capacity
+	virtual DataType& operator [] (int k);												// Overloads bracket operator to access data at index of k
+	void operator=(const ArrayClass<DataType>& ac);										// Overloads equals operator to copy information from the given ArrayClass
 };
 
 // Purely virtual vector template
 template <class DataType>
 class AbstractVector : virtual public AbstractArrayClass<DataType> {
 public:
-	virtual void insert(const DataType& item, int index) = 0; 		// Insert a new object at position index in the vector
-	virtual void remove(int index) = 0; 							// Removes the object at position index of the vector
-	virtual void add(const DataType& item) = 0; 					// Adds item at end of the vector
+	virtual void insert(const DataType& item, int index) = 0; 							// Insert a new object at position index in the vector
+	virtual void remove(int index) = 0; 												// Removes the object at position index of the vector
+	virtual void add(const DataType& item) = 0; 										// Adds item at end of the vector
 };
 
 // Encapsulation of a DataType Vector, allows for dynamically sized array
 template <class DataType>
 class Vector : virtual public ArrayClass<DataType>, virtual public AbstractVector<DataType> {
 protected:
-	int _currSize;													// Active size of the array	
-	int _incFactor;													// Index at which the size of the array will be doubled
+	int _currSize;																		// Active size of the array	
+	int _incFactor;																		// Index at which the size of the array will be doubled
 public:
-	Vector();														// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
-	Vector(int n);													// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
-	Vector(int n, DataType& val);									// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
-	Vector(const Vector<DataType>& v);								// Copy constructor, transfers data from an external Vector, and copies data into self
-	Vector(const ArrayClass<DataType>& ac);							// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
-	virtual ~Vector();												// Destructor
-	void operator= (const Vector<DataType>& v);						// Overloads equals operator to copy information from the given Vector
-	void operator= (const ArrayClass<DataType>& ac);				// Overloads equals operator to copy information from the given ArrayClass
-	bool operator== (Vector<DataType>& v);					// Overloads equality operator to check the contents of the two vectors
-	virtual void insert(const DataType& item, int index);			// Shifts all items up to the current array from the given index, and inserts item into given index
-	virtual void remove(int index);									// Removes item at given index, shifts down other objects, and decrements active array size
-	virtual void add(const DataType& item);							// Appends an object to the underlying Array
-	virtual int size() const; 										// Returns size of underlying array
-	virtual int capacity() const;									// Returns capacity of underlying array
-	virtual int incFactor() const;									// Returns current increment factor
-	virtual void setIncFactor(int f);								// Resets the incedent factor to necessary size
-	void setCapacity(int c);										// Resizes underlying array to the specified capacit
-	bool contains(const DataType& i);								// Checks whether the vector contains a member of the specified dataType
+	Vector();																			// Default constructor, calls underlying ArrayClass' default constructor, and sets current size to 0
+	Vector(int n);																		// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(int n, DataType& val);														// Initializer, calls underlying ArrayClass' initializer, and sets increment factor to default
+	Vector(const Vector<DataType>& v);													// Copy constructor, transfers data from an external Vector, and copies data into self
+	Vector(const ArrayClass<DataType>& ac);												// Copy constructor, transfers data from an external ArrayClass, and copies data into underlying Array
+	virtual ~Vector();																	// Destructor
+	void operator= (const Vector<DataType>& v);											// Overloads equals operator to copy information from the given Vector
+	void operator= (const ArrayClass<DataType>& ac);									// Overloads equals operator to copy information from the given ArrayClass
+	bool operator== (Vector<DataType>& v);												// Overloads equality operator to check the contents of the two vectors, MUST BE EQUAL CASE
+	virtual void insert(const DataType& item, int index);								// Shifts all items up to the current array from the given index, and inserts item into given index
+	virtual void remove(int index);														// Removes item at given index, shifts down other objects, and decrements active array size
+	virtual void add(const DataType& item);												// Appends an object to the underlying Array
+	virtual int size() const; 															// Returns size of underlying array
+	virtual int capacity() const;														// Returns capacity of underlying array
+	virtual int incFactor() const;														// Returns current increment factor
+	virtual void setIncFactor(int f);													// Resets the incedent factor to necessary size
+	void setCapacity(int c);															// Resizes underlying array to the specified capacit
+	bool contains(const DataType& i);													// Checks whether the vector contains a member of the specified dataType
 };
 #pragma region array
 template <class DataType>
@@ -410,19 +410,23 @@ public:
 template <class FirstDT, class SecondDT>
 class MasterCell {
 protected:
-	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;												// The underlying resizable vector containing all of the cell nodes
+	Vector<CellNode<FirstDT, SecondDT>> _myCellNodes;									// The underlying resizable vector containing all of the cell nodes
 public:
-	MasterCell();																					// Constructs an empty Master Cell
-	MasterCell(int vectorSize);																		// Sets the capacity of the underlying vector
-	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);										// Constructs a master cell with a constructor including a cell Node
-	~MasterCell();																					// Destructor
-	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);										// Inserts the cell node to the end of the underlying vector
-	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);								// Copies information from the supplied masterCell to the current masterCell
-	Vector<CellNode<FirstDT, SecondDT>>& getVector();												// Retrieves the vector
-	Vector<FirstDT>& findKeywords(int keyword);														// Returns an array of strings that matches an input value
-	Vector<int>& and(FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are common to both
-	Vector<int>& or (FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are in either of them
-	Vector<int>& xor(FirstDT& firstKeyword, FirstDT& secondKeyword);								// Takes two keywords and returns all integers that are not common in both
+	MasterCell();																		// Constructs an empty Master Cell
+	MasterCell(int vectorSize);															// Sets the capacity of the underlying vector
+	MasterCell(const CellNode<FirstDT, SecondDT>& cellNode);							// Constructs a master cell with a constructor including a cell Node
+	~MasterCell();																		// Destructor
+	void insertCellNode(CellNode<FirstDT, SecondDT>& cellNode);							// Inserts the cell node to the end of the underlying vector
+	void operator= (const MasterCell<FirstDT, SecondDT>& masterCell);					// Copies information from the supplied masterCell to the current masterCell
+	Vector<CellNode<FirstDT, SecondDT>>& getVector();									// Retrieves the vector
+	Vector<FirstDT>& findKeywords(int keyword);											// Returns an array of strings that matches an input value
+	Vector<int>& and(FirstDT& firstKeyword, FirstDT& secondKeyword);					// Takes two keywords and returns all integers that are common to both
+	Vector<int>& or (FirstDT& firstKeyword, FirstDT& secondKeyword);					// Takes two keywords and returns all integers that are in either of them
+	Vector<int>& xor(FirstDT& firstKeyword, FirstDT& secondKeyword);					// Takes two keywords and returns all integers that are not common in both
+	Vector<int>& and(Vector<int>& intArray, FirstDT& firstKeyword);						// Takes two keywords and returns all integers that are common to both
+	Vector<int>& or (Vector<int>& intArray, FirstDT& firstKeyword);						// Takes two keywords and returns all integers that are in either of them
+	Vector<int>& xor(Vector<int>& intArray, FirstDT& firstKeyword);						// Takes two keywords and returns all integers that are not common in both
+
 };
 
 #pragma region Cell
@@ -761,6 +765,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: and (FirstDT& firstKeyword, FirstDT
 {
 	int firstKeywordIndex = -1, secondKeywordIndex = -1;
 	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
 	for (int i = 0; i < _myCellNodes.size(); ++i) {
 		try {
 			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
@@ -775,6 +780,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: and (FirstDT& firstKeyword, FirstDT
 			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
 		}
 	}
+	// Takes O(N^2) time, loops through all values in second list for each value in first list
 	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
 		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
 		if (_myCellNodes[secondKeywordIndex].returnMyCell().find(infoAtIndex) != -1) {
@@ -788,6 +794,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: or (FirstDT& firstKeyword, FirstDT&
 {
 	int firstKeywordIndex = -1, secondKeywordIndex = -1;
 	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
 	for (int i = 0; i < _myCellNodes.size(); ++i) {
 		try {
 			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
@@ -801,6 +808,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: or (FirstDT& firstKeyword, FirstDT&
 			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
 		}
 	}
+	// Adds all ids, if not already inside
 	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
 		int firstInfoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
 		if (!(*ids).contains(firstInfoAtIndex)) {
@@ -820,6 +828,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (FirstDT& firstKeyword, FirstDT
 {
 	int firstKeywordIndex = -1, secondKeywordIndex = -1;
 	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
 	for (int i = 0; i < _myCellNodes.size(); ++i) {
 		try {
 			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
@@ -834,6 +843,7 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (FirstDT& firstKeyword, FirstDT
 			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
 		}
 	}
+	// Checks each value in second list for value in first list, to check not contains
 	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
 		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
 		if (_myCellNodes[secondKeywordIndex].returnMyCell().find(infoAtIndex) == -1) {
@@ -852,10 +862,103 @@ Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (FirstDT& firstKeyword, FirstDT
 	}
 	return *ids;
 }
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: and (Vector<int>& intArray, FirstDT& firstKeyword)
+{
+	int firstKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
+		}
+	}
+	// Similar to above 'AND' method
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (intArray.contains(infoAtIndex)) {
+			(*ids).add(infoAtIndex);
+		}
+	}
+	return *ids;
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: or (Vector<int>& intArray, FirstDT& firstKeyword)
+{
+	int firstKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
+		}
+	}
+	// Similar to above 'OR' method
+	for (int index = 0; index < intArray.size(); ++index) {
+		int secondInfoAtIndex = intArray[index];
+		if (!(*ids).contains(secondInfoAtIndex)) {
+			(*ids).add(secondInfoAtIndex);
+		}
+	}
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int firstInfoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (!(*ids).contains(firstInfoAtIndex)) {
+			(*ids).add(firstInfoAtIndex);
+		}
+	}
+
+	return *ids;
+}
+template<class FirstDT, class SecondDT>
+Vector<int>& MasterCell<FirstDT, SecondDT>:: xor (Vector<int>& intArray, FirstDT& firstKeyword)
+{
+	int firstKeywordIndex = -1;
+	Vector<int>* ids = new Vector<int>();
+	// Finds first and second keyword index
+	for (int i = 0; i < _myCellNodes.size(); ++i) {
+		try {
+			if (_myCellNodes[i].returnMyInfo() == firstKeyword) {
+				firstKeywordIndex = i;
+			}
+		}
+		catch (ArrayBoundsException) {
+			cout << "Didn't contain firstKeyword or secondKeyword" << endl;
+		}
+	}
+	//Similar to above 'XOR' method
+	for (int index = 0; index < intArray.size(); ++index) {
+		int infoAtIndex = intArray[index];
+		if (_myCellNodes[firstKeywordIndex].returnMyCell().find(infoAtIndex) == -1) {
+			if (!(*ids).contains(infoAtIndex)) {
+				(*ids).add(infoAtIndex);
+			}
+		}
+	}
+	for (int index = 0; index < _myCellNodes[firstKeywordIndex].returnMyCell().size(); ++index) {
+		int infoAtIndex = _myCellNodes[firstKeywordIndex].returnMyCell().infoAt(index);
+		if (!intArray.contains(infoAtIndex)) {
+			if (!(*ids).contains(infoAtIndex)) {
+				(*ids).add(infoAtIndex);
+			}
+		}
+	}
+	return *ids;
+}
 #pragma endregion Methods
 #pragma endregion Definitions
 
-void strEmpty(Vector<char>& str) {
+template <class DataType>
+void vectEmpty(Vector<DataType>& str) {
 	for (int i = str.size() - 1; i >= 0; --i) {
 		str.remove(i);
 	}
@@ -865,14 +968,18 @@ int main() {
 	Vector<char> charInfo;																// Information used when reading InputFile_Part1
 	int intInfo;																		// Information used when reading InputFile_Part2
 	int noItems;																		// Number of id's to read
+	int noLines;																		// Number of lines to read
 	int id;																				// Each ID that is read
-	int noTimes;
 	char buffer;																		// Used to read into charInfo
 	char comma;																			// Junk variable
-
-	MasterCell<Vector<char>, int> charMasterCell;
-	while (cin >> buffer) {
-		strEmpty(charInfo);
+	char operate;																		// Operator input
+	Vector<Vector<char>> operands(7);													// Character operands
+	Vector<char> operators(5);															// Character operators
+	MasterCell<Vector<char>, int> charMasterCell;										// Master cell
+	cin >> noLines;
+	for (int i = 0; i < noLines; ++i) {
+		cin >> buffer;
+		vectEmpty(charInfo);
 		charInfo.add(buffer);
 		do {
 			cin.get(buffer);
@@ -891,10 +998,79 @@ int main() {
 		charMasterCell.insertCellNode(cellNode);
 	}
 	cout << charMasterCell << endl;
-	int keyword = 456;
-	//cout << endl << "Keywords that contain an id value of " << keyword << ": " << charMasterCell.findKeywords(keyword) << endl;
+
+	while (cin >> buffer) {
+		vectEmpty(operands);
+		vectEmpty(operators);
+		do {
+			vectEmpty(charInfo);
+			charInfo.add(buffer);
+			do {
+				cin.get(buffer);
+				charInfo.add(buffer);
+			} while (cin.peek() != '&' && cin.peek() != '|' && cin.peek() != '%' && cin.peek() != '\n');
+			if (cin.peek() != '\n') {
+				charInfo.remove(charInfo.size() - 1);
+				operands.add(charInfo);
+				cout << charInfo;
+				cin.get(operate);
+				cout << " " << operate;
+				operators.add(operate);
+				cin.get(comma);
+				cout << " ";
+				cin.get(buffer);
+			}
+			else {
+				cout << charInfo << ":";
+				operands.add(charInfo);
+			}
+		} while (cin.peek() != '\n');
+		Vector<int> ids;
+		switch (operators[0]) {
+		case '&':
+			ids = charMasterCell. and (operands[0], operands[1]);
+			break;
+		case '|':
+			ids = charMasterCell. or (operands[0], operands[1]);
+			break;
+		case '%':
+			ids = charMasterCell. xor (operands[0], operands[1]);
+			break;
+		default:
+			cout << "Illegal operator" << endl;
+			break;
+		}
+
+		for (int i = 2; i < operands.size(); ++i) {
+			switch (operators[i - 1]) {
+			case '&':
+				ids = charMasterCell. and (ids, operands[i]);
+				break;
+			case '|':
+				ids = charMasterCell. or (ids, operands[i]);
+				break;
+			case '%':
+				ids = charMasterCell. xor (ids, operands[i]);
+				break;
+			default:
+				cout << "Illegal operator" << endl;
+				break;
+			}
+		}
+		for (int i = 0; i < ids.size(); ++i) {
+			cout << ids[i] << " ";
+		}
+		if (ids.size() == 0) {
+			cout << "No relationship";
+		}
+		cout << endl;
+	}
+
+
+#pragma region Testing
+	cout << endl << "TEST CASES:" << endl;
 	char one[] = { 'D','i','s','c','r','e','t','e',' ','M','a','t','h','e','m','a','t','i','c','s','\0' };
-	char two[] = { 'D','e','s','i','g','n',' ','o','f',' ','L','o','g','i','c',' ','C','i','r','c','u','i','t','s','\0' };
+	char two[] = { 'C','o','m','p','i','l','e','r',' ','C','o','n','s','t','r','u','c','t','i','o','n','\0' };
 	Vector<char> oneTest(21);
 	Vector<char> twoTest(21);
 	for (int i = 0; one[i] != '\0'; ++i) {
@@ -903,6 +1079,41 @@ int main() {
 	for (int i = 0; two[i] != '\0'; ++i) {
 		twoTest.add(two[i]);
 	}
-	charMasterCell. xor (oneTest, twoTest);
+	Vector<int> test1 = charMasterCell. and (oneTest, twoTest);
+	Vector<int> test2 = charMasterCell. or (oneTest, twoTest);
+	Vector<int> test3 = charMasterCell. xor (oneTest, twoTest);
 
+	cout << "Discrete Mathematics AND Compiler Construction: ";
+	for (int i = 0; i < test1.size(); ++i) {
+		cout << test1[i];
+		if (i < test1.size() - 1) {
+			cout << ",";
+		}
+	}
+	cout << endl << "Discrete Mathematics OR Compiler Construction: ";
+	for (int i = 0; i < test2.size(); ++i) {
+		cout << test2[i];
+		if (i < test2.size() - 1) {
+			cout << ",";
+		}
+	}
+	cout << endl << "Discrete Mathematics XOR Compiler Construction: ";
+	for (int i = 0; i < test3.size(); ++i) {
+		cout << test3[i];
+		if (i < test3.size() - 1) {
+			cout << ",";
+		}
+	}
+	cout << endl;
+	int testNumber = 30;
+	cout << "Find classes with " << testNumber << ':';
+	Vector<Vector<char>> strings = charMasterCell.findKeywords(testNumber);
+	for (int i = 0; i < strings.size(); ++i) {
+		cout << strings[i];
+		if (i < strings.size() - 1) {
+			cout << ",";
+		}
+	}
+	cout << endl;
+#pragma endregion HERE
 }

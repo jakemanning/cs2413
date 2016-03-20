@@ -1,27 +1,36 @@
+26 
 Operating Systems, 5 1200 1800 300 4999 5000
-Compiler construction, 3 30 1000 80
-Database Management systems, 3 20 10 40
-Java programs for beginners, 2 41 31
-Statistics introduction, 3 88 75 26
-Algorithms analysis, 1 51
-Composition and Communication U, 2 56 79676 
-Calculus one, 3 456 7688 122212121 
-Calculus two, 4 222 766767 888 443333 
-The Computer Science Profession, 5 23323 55665 111 44445 2333
-Introduction to Computer Programming, 2 4343 445454  
-Introduction to Program Design, 7 121221 333 5511 2112 4599 1215 5656
+Compiler Construction, 3 30 10 80
+Database Management Systems, 3 30 10 40
+Java programs for beginners, 2 20 31
+Statistics introduction, 3 30 10 26
+Algorithms Analysis, 1 51
+Theory of Computation, 2 56 20
+Calculus one, 3 30 10 12121 
+Calculus two, 4 222 766767 888 4433 
+The Computer Science Profession, 6 60 55665 111 4445 23 33
+Introduction to Computer Programming, 2 20 4454  
+Introduction to Program Design, 6 60 5511 2112 4599 13949 5656
 Abstraction and Problem Solving, 4 2009 8 65 6 
-Discrete Mathematics, 3 12 4 7
- General University Physics, 5 3 5 6 3 1 
-General University Physics Laboratory, 1 435954994
+Discrete Mathematics, 3 30 10 7
+General University Physics, 5 1200 1800 6 3 1 
+General University Physics Laboratory, 1 43949
 Introduction to Software Engineering, 1 33 
-Design of Logic Circuits, 2 4 5656
-Calculus III, 5 22334 34334 44444 444545 1122121
-General University Physics, 2 343 7676  
- General University Physics Laboratory, 1 23
-Composition and Communication II, 3 43343 445545 333332
+Design of Logic Circuits, 2 4 20
+Calculus III, 5 1200 3334 4444 4445 11121
+General University Physics, 2 20 7676  
+General University Physics Laboratory, 1 23 
+Composition and Communication II, 3 30 10 3332
 Senior Design Project, 1 23456 
-Computer Science Elective, 2 88765 213098
-Technical Electives, 3 765 1135 2345678 
+Computer Science Elective, 2 20 213098
+Technical Electives, 3 30 10 25678 
 Elective, 4 456 6676 3343 434
+Operating Systems & Compiler Construction & Theory of Computation
+Operating Systems | Database Management Systems & Algorithms Analysis
+Discrete Mathematics & Calculus one | Calculus two
+The Computer Science Profession % Introduction to Program Design & General University Physics Laboratory
+Senior Design Project | Computer Science Elective & Design of Logic Circuits
+Computer Science Elective % Technical Electives % Elective
+Design of Logic Circuits % Calculus III | General University Physics
+
 
