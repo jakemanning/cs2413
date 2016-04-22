@@ -289,6 +289,7 @@ public:
 	void operator= (const ParentBinaryTree<DT>& binaryTree);							// Overloaded equals to operator, creates an equivalent tree with the supplied tree
 	void display(ostream& s, const int& parentValue);									// Recursively calls itself to show preorder traversal of the supplied tree
 	int findIndexForValue(const int& value, const int& startingFrom);					// Finds the index for the given value, starting from a particular index in the tree
+	Vector<int>& findIndexesForValue(const int& value);
 	int nodeSize(const int& parentValue);												// Recursively calls itself to find the size of the specific tree given the parentNode value
 	int nodeHeight(const int& parentValue);												// Recursively calls itself to find the height of the specific tree given the parentNode value
 	int getTreeHeight();																// Returns the height of the entire tree
@@ -296,6 +297,7 @@ public:
 	int getRoot();																		// Returns the parentNode of the entire tree
 	int getLeft(const int& parentValue);												// Returns the left node of the given parentValue, -1 if there is no left node
 	int getRight(const int& parentValue);												// Returns the right node of the given parentValue, -1 if there is no right node
+	Vector<int>& getChildren(const int& parentValue);
 	void preOrderTreeTraversal();														// Traverses the entire tree, preOrder
 	void inOrderTreeTraversal();														// Traverses the entire tree, inOrder
 	void postOrderTreeTraversal();														// Traverses the entire tree, postOrder
@@ -447,6 +449,10 @@ int ParentBinaryTree<DT>::getRight(const int& parentValue)
 	// if: newPotentialRight == -1
 	return -1;
 }
+template <class DT>
+Vector<int>& ParentBinaryTree<DT>::getChildren(const int& parentValue) {
+	return findIndexesForValue(parentValue);
+}
 template<class DT>
 void ParentBinaryTree<DT>::preOrderTreeTraversal() {
 	preOrderTraversal(getRoot());
@@ -500,6 +506,16 @@ int ParentBinaryTree<DT>::findIndexForValue(const int& value, const int& startin
 		}
 	}
 	return -1;
+}
+template <class DT>
+Vector<int>& ParentBinaryTree<DT>::findIndexesForValue(const int& value) {
+	Vector<int> children;
+	for (int i = 0; i < _numNodes; ++i) {
+		if ((*_parentArray)[i] == value) {
+			children.add((*_parentArray)[i]);
+		}
+	}
+	return children;
 }
 template<class DT>
 void ParentBinaryTree<DT>::insertToTree(const int & parent, const int & left, const int & right)
