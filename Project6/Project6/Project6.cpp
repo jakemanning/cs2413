@@ -274,22 +274,21 @@ bool Vector<DataType>::contains(const DataType& var) {
 
 #pragma region ParentBinaryTree
 template <class DT>
-class ParentBinaryTree {
+class ParentMultiTree {
 protected:
 	DT* _parentArray;																	// Array containing the indexes of the parent
 	DT* _childOrderArray;																// Array containing the order of the children
 	int _numNodes;																		// Size of both arrays
-	void copy(const ParentBinaryTree<DT>& binaryTree);									// Copy constructor
+	void copy(const ParentMultiTree<DT>& binaryTree);									// Copy constructor
 	int max(int firstNumber, int secondNumber);											// Finds the maximum value between two integers
 public:
-	ParentBinaryTree();																	// Empty constructor, initializes empty parentArray, childOrderArray, and sets numNodes to 0
-	ParentBinaryTree(int size);															// Initializer, creates a parentArray, and childOrderArray with 'size' number of zeroes, and sets numNodes to size
-	~ParentBinaryTree();																// Destructor, deletes the parentArray, childOrderArray, and sets numNodes to NULL
-	ParentBinaryTree(const ParentBinaryTree<DT>& binaryTree);							// Copy constructor, constructs a tree with the supplied tree
-	void operator= (const ParentBinaryTree<DT>& binaryTree);							// Overloaded equals to operator, creates an equivalent tree with the supplied tree
+	ParentMultiTree();																	// Empty constructor, initializes empty parentArray, childOrderArray, and sets numNodes to 0
+	ParentMultiTree(int size);															// Initializer, creates a parentArray, and childOrderArray with 'size' number of zeroes, and sets numNodes to size
+	~ParentMultiTree();																	// Destructor, deletes the parentArray, childOrderArray, and sets numNodes to NULL
+	ParentMultiTree(const ParentMultiTree<DT>& binaryTree);								// Copy constructor, constructs a tree with the supplied tree
+	void operator= (const ParentMultiTree<DT>& binaryTree);								// Overloaded equals to operator, creates an equivalent tree with the supplied tree
 	void display(ostream& s, const int& parentValue);									// Recursively calls itself to show preorder traversal of the supplied tree
 	int findIndexForValue(const int& value, const int& startingFrom);					// Finds the index for the given value, starting from a particular index in the tree
-	Vector<int>& findIndexesForValue(const int& value);
 	int nodeSize(const int& parentValue);												// Recursively calls itself to find the size of the specific tree given the parentNode value
 	int nodeHeight(const int& parentValue);												// Recursively calls itself to find the height of the specific tree given the parentNode value
 	int getTreeHeight();																// Returns the height of the entire tree
@@ -298,22 +297,23 @@ public:
 	int getLeft(const int& parentValue);												// Returns the left node of the given parentValue, -1 if there is no left node
 	int getRight(const int& parentValue);												// Returns the right node of the given parentValue, -1 if there is no right node
 	Vector<int>& getChildren(const int& parentValue);
+	Vector<int>& getChildrenOrder(const int& parentValue);
+	Vector<int> reorder(Vector<int> arr, Vector<int> index);
 	void preOrderTreeTraversal();														// Traverses the entire tree, preOrder
-	void inOrderTreeTraversal();														// Traverses the entire tree, inOrder
-	void postOrderTreeTraversal();														// Traverses the entire tree, postOrder
 	void preOrderTraversal(const int& parentValue);										// Prints in a recursive fashion: Root, Left, Right
-	void inOrderTraversal(const int& parentValue);										// Prints in a recursive fashion: Left, Root, Right
-	void postOrderTraversal(const int& parentValue);									// Prints in a recursive fashion: Left, Right, Root
+	void preOrderChildrenTraversal(const int& parentValue);
 	void insertToTree(const int& parent, const int& left, const int& right);			// Inserts nodes to the tree, starting from the parent, given the parentNode, the left and the right (-1 if no left/right)
+	void insertToTree(const int& parent, const DT& children);
+
 };
 template <class DT>
-ParentBinaryTree<DT>::ParentBinaryTree() {
+ParentMultiTree<DT>::ParentMultiTree() {
 	_parentArray = new DT();
 	_childOrderArray = new DT();
 	_numNodes = 0;
 }
 template <class DT>
-ParentBinaryTree<DT>::ParentBinaryTree(int size) {
+ParentMultiTree<DT>::ParentMultiTree(int size) {
 	_parentArray = new DT(size, 0);
 	_childOrderArray = new DT(size, 0);
 	_numNodes = size;
@@ -322,7 +322,7 @@ ParentBinaryTree<DT>::ParentBinaryTree(int size) {
 	}
 }
 template <class DT>
-ParentBinaryTree<DT>::~ParentBinaryTree() {
+ParentMultiTree<DT>::~ParentMultiTree() {
 	delete _parentArray;
 	_parentArray = NULL;
 	delete _childOrderArray;
@@ -330,15 +330,15 @@ ParentBinaryTree<DT>::~ParentBinaryTree() {
 	_numNodes = NULL;
 }
 template <class DT>
-ParentBinaryTree<DT>::ParentBinaryTree(const ParentBinaryTree<DT>& binaryTree) {
+ParentMultiTree<DT>::ParentMultiTree(const ParentMultiTree<DT>& binaryTree) {
 	copy(binaryTree);
 }
 template<class DT>
-void ParentBinaryTree<DT>::operator=(const ParentBinaryTree<DT>& binaryTree) {
+void ParentMultiTree<DT>::operator=(const ParentMultiTree<DT>& binaryTree) {
 	copy(binaryTree);
 }
 template <class DT>
-void ParentBinaryTree<DT>::copy(const ParentBinaryTree<DT>& binaryTree) {
+void ParentMultiTree<DT>::copy(const ParentMultiTree<DT>& binaryTree) {
 	_parentArray = binaryTree._parentArray;
 	_childOrderArray = binaryTree._childOrderArray;
 	_numNodes = binaryTree._numNodes;
@@ -347,13 +347,13 @@ void ParentBinaryTree<DT>::copy(const ParentBinaryTree<DT>& binaryTree) {
 	}
 }
 template<class DT>
-ostream & operator<<(ostream& s, ParentBinaryTree<DT>& binaryTree)
+ostream & operator<<(ostream& s, ParentMultiTree<DT>& binaryTree)
 {
 	binaryTree.display(s, binaryTree.getRoot());
 	return s;
 }
 template<class DT>
-void ParentBinaryTree<DT>::display(ostream& s, const int& parentValue)
+void ParentMultiTree<DT>::display(ostream& s, const int& parentValue)
 {
 	if (parentValue == -1 && getLeft(parentValue) == -1 && getRight(parentValue) == -1) {
 		return;
@@ -363,19 +363,30 @@ void ParentBinaryTree<DT>::display(ostream& s, const int& parentValue)
 	display(s, getRight(parentValue));
 }
 template<class DT>
-int ParentBinaryTree<DT>::max(int firstNumber, int secondNumber) {
+void display(ostream& s, const int& parentValue) {
+	Vector<int> children = reorder(getChildren(parentValue), getChildrenOrder(parentValue));
+	if (children.size() == 0) {
+		return;
+	}
+	s << parentValue << " ";
+	for (int i = 0; i < children.size(); ++i) {
+		display(s, children[i]);
+	}
+}
+template<class DT>
+int ParentMultiTree<DT>::max(int firstNumber, int secondNumber) {
 	return firstNumber >= secondNumber ? firstNumber : secondNumber;
 }
 template<class DT>
-int ParentBinaryTree<DT>::getTreeHeight() {
+int ParentMultiTree<DT>::getTreeHeight() {
 	return nodeHeight(getRoot());
 }
 template<class DT>
-int ParentBinaryTree<DT>::getTreeSize() {
+int ParentMultiTree<DT>::getTreeSize() {
 	return nodeSize(getRoot());
 }
 template<class DT>
-int ParentBinaryTree<DT>::nodeSize(const int& parentValue) // recursive
+int ParentMultiTree<DT>::nodeSize(const int& parentValue) // recursive
 {
 	int size = 0;
 	int leftSize;
@@ -394,7 +405,7 @@ int ParentBinaryTree<DT>::nodeSize(const int& parentValue) // recursive
 	return size;
 }
 template<class DT>
-int ParentBinaryTree<DT>::nodeHeight(const int& parentValue) // recursive
+int ParentMultiTree<DT>::nodeHeight(const int& parentValue) // recursive
 {
 	int height = 0;
 	int leftHeight;
@@ -414,12 +425,12 @@ int ParentBinaryTree<DT>::nodeHeight(const int& parentValue) // recursive
 	return height;
 }
 template<class DT>
-int ParentBinaryTree<DT>::getRoot()
+int ParentMultiTree<DT>::getRoot()
 {
 	return findIndexForValue(-1, 0);
 }
 template<class DT>
-int ParentBinaryTree<DT>::getLeft(const int& parentValue)
+int ParentMultiTree<DT>::getLeft(const int& parentValue)
 {
 	int potentialLeft = findIndexForValue(parentValue, 0);
 	if (potentialLeft == -1) {
@@ -431,7 +442,7 @@ int ParentBinaryTree<DT>::getLeft(const int& parentValue)
 	return -1;
 }
 template<class DT>
-int ParentBinaryTree<DT>::getRight(const int& parentValue)
+int ParentMultiTree<DT>::getRight(const int& parentValue)
 {
 	int potentialRight = findIndexForValue(parentValue, 0);
 	if (potentialRight == -1) {
@@ -450,65 +461,7 @@ int ParentBinaryTree<DT>::getRight(const int& parentValue)
 	return -1;
 }
 template <class DT>
-Vector<int>& ParentBinaryTree<DT>::getChildren(const int& parentValue) {
-	return findIndexesForValue(parentValue);
-}
-template<class DT>
-void ParentBinaryTree<DT>::preOrderTreeTraversal() {
-	preOrderTraversal(getRoot());
-	cout << endl;
-}
-template<class DT>
-void ParentBinaryTree<DT>::inOrderTreeTraversal() {
-	inOrderTraversal(getRoot());
-	cout << endl;
-}
-template<class DT>
-void ParentBinaryTree<DT>::postOrderTreeTraversal() {
-	postOrderTraversal(getRoot());
-	cout << endl;
-}
-template<class DT>
-void ParentBinaryTree<DT>::preOrderTraversal(const int& parentValue) // recursive
-{
-	if (parentValue == -1 && getLeft(parentValue) == -1 && getRight(parentValue) == -1) {
-		return;
-	}
-	cout << parentValue << " ";
-	preOrderTraversal(getLeft(parentValue));
-	preOrderTraversal(getRight(parentValue));
-}
-template<class DT>
-void ParentBinaryTree<DT>::inOrderTraversal(const int& parentValue) // recursive
-{
-	if (parentValue == -1 && getLeft(parentValue) == -1 && getRight(parentValue) == -1) {
-		return;
-	}
-	inOrderTraversal(getLeft(parentValue));
-	cout << parentValue << " ";
-	inOrderTraversal(getRight(parentValue));
-}
-template<class DT>
-void ParentBinaryTree<DT>::postOrderTraversal(const int& parentValue) // recursive
-{
-	if (parentValue == -1 && getLeft(parentValue) == -1 && getRight(parentValue) == -1) {
-		return;
-	}
-	postOrderTraversal(getLeft(parentValue));
-	postOrderTraversal(getRight(parentValue));
-	cout << parentValue << " ";
-}
-template<class DT>
-int ParentBinaryTree<DT>::findIndexForValue(const int& value, const int& startingFrom) {
-	for (int i = startingFrom; i < _numNodes; ++i) {
-		if ((*_parentArray)[i] == value) {
-			return i;
-		}
-	}
-	return -1;
-}
-template <class DT>
-Vector<int>& ParentBinaryTree<DT>::findIndexesForValue(const int& value) {
+Vector<int>& ParentMultiTree<DT>::getChildren(const int& parentValue) {
 	Vector<int> children;
 	for (int i = 0; i < _numNodes; ++i) {
 		if ((*_parentArray)[i] == value) {
@@ -517,8 +470,67 @@ Vector<int>& ParentBinaryTree<DT>::findIndexesForValue(const int& value) {
 	}
 	return children;
 }
+template <class DT>
+Vector<int>& ParentMultiTree<DT>::getChildrenOrder(const int& parentValue) {
+	Vector<int> childOrder
+		for (int i = 0; i < _numNodes; ++i) {
+			if ((*_parentArray)[i] == value) {
+				childOrder.add((*_childOrderArray)[i]);
+			}
+		}
+
+	return childOrder;
+}
+template <class DT>
+Vector<int> ParentMultiTree<DT>::reorder(Vector<int> arr, Vector<int> index) {
+	Vector<int> temp(arr.size());
+	for (int i = 0; i < arr.size(); ++i) {
+		temp[index[i]] = arr[i];
+	}
+
+	for (int i = 0; i < arr.size(); ++i) {
+		arr[i] = temp[i];
+	}
+
+	return arr;
+}
 template<class DT>
-void ParentBinaryTree<DT>::insertToTree(const int & parent, const int & left, const int & right)
+void ParentMultiTree<DT>::preOrderTreeTraversal() {
+	preOrderTraversal(getRoot());
+	cout << endl;
+}
+template<class DT>
+void ParentMultiTree<DT>::preOrderTraversal(const int& parentValue) // recursive
+{
+	if (parentValue == -1 && getLeft(parentValue) == -1 && getRight(parentValue) == -1) {
+		return;
+	}
+	cout << parentValue << " ";
+	preOrderTraversal(getLeft(parentValue));
+	preOrderTraversal(getRight(parentValue));
+}
+template <class DT>
+void ParentMultiTree<DT>::preOrderChildrenTraversal(const int& parentValue) {
+	Vector<int> children = reorder(getChildren(parentValue), getChildrenOrder(parentValue));
+	if (children.size() == 0) {
+		return;
+	}
+	cout << parentValue << " ";
+	for (int i = 0; i < children.size(); ++i) {
+		preOrderChildrenTraversal(children[i]);
+	}
+}
+template<class DT>
+int ParentMultiTree<DT>::findIndexForValue(const int& value, const int& startingFrom) {
+	for (int i = startingFrom; i < _numNodes; ++i) {
+		if ((*_parentArray)[i] == value) {
+			return i;
+		}
+	}
+	return -1;
+}
+template<class DT>
+void ParentMultiTree<DT>::insertToTree(const int & parent, const int & left, const int & right)
 {
 	// Only happens first time
 	if (getRoot() == -1) {
@@ -551,6 +563,29 @@ void ParentBinaryTree<DT>::insertToTree(const int & parent, const int & left, co
 		}
 	}
 }
+template <class DT>
+void ParentMultiTree<DT>::insertToTree(const int& parent, const DT& children) {
+	// Only happens first time
+	if (getRoot() == -1) {
+		if (parent >= _numNodes) {
+			throw BinaryTreeMemory();
+		}
+		else {
+			(*_parentArray)[parent] = -1;
+			(*_childOrderArray)[parent] = -1;
+		}
+	}
+
+	for (int i = 0; i < chilren.size(); ++i) {
+		if (children[i] > _numNodes) {
+			throw BinaryTreeMemory();
+		}
+		else {
+			(*_parentArray)[i] = children[i];
+			(*_childOrderArray)[i] = i;
+		}
+	}
+}
 #pragma endregion Methods
 
 int main() {
@@ -560,7 +595,7 @@ int main() {
 	int right;
 
 	cin >> numberOfNodes;
-	ParentBinaryTree<ArrayClass<int>>* parentBinaryTree = new ParentBinaryTree<ArrayClass<int>>(numberOfNodes);
+	ParentMultiTree<ArrayClass<int>>* parentBinaryTree = new ParentMultiTree<ArrayClass<int>>(numberOfNodes);
 	while (cin >> parent) {
 		cin >> left;
 		cin >> right;
@@ -569,25 +604,17 @@ int main() {
 	cout << "Original Binary Tree:" << endl;
 	cout << "Overloaded ostream operator (preorder): ";
 	cout << (*parentBinaryTree) << endl;
-	cout << "In order traversal: ";
-	(*parentBinaryTree).inOrderTreeTraversal();
-	cout << "Post order traversal: ";
-	(*parentBinaryTree).postOrderTreeTraversal();
 	cout << "Size of tree: " << (*parentBinaryTree).getTreeSize() << endl;
 	cout << "Height of tree: " << (*parentBinaryTree).getTreeHeight() << endl;
 
-	ParentBinaryTree<ArrayClass<int>>* testCopyBinaryTree = new ParentBinaryTree<ArrayClass<int>>(*parentBinaryTree);
+	ParentMultiTree<ArrayClass<int>>* testCopyBinaryTree = new ParentMultiTree<ArrayClass<int>>(*parentBinaryTree);
 	cout << endl << "Copied Binary Tree:" << endl;
 	cout << "Overloaded ostream operator (preorder): ";
 	cout << (*testCopyBinaryTree) << endl;
-	cout << "In order traversal: ";
-	(*testCopyBinaryTree).inOrderTreeTraversal();
-	cout << "Post order traversal: ";
-	(*testCopyBinaryTree).postOrderTreeTraversal();
 	cout << "Size of tree: " << (*testCopyBinaryTree).getTreeSize() << endl;
 	cout << "Height of tree: " << (*testCopyBinaryTree).getTreeHeight() << endl;
 
-	ParentBinaryTree<ArrayClass<int>>* testBinaryTree = new ParentBinaryTree<ArrayClass<int>>(13);
+	ParentMultiTree<ArrayClass<int>>* testBinaryTree = new ParentMultiTree<ArrayClass<int>>(13);
 	(*testBinaryTree).insertToTree(6, 4, 8);
 	(*testBinaryTree).insertToTree(4, 2, 5);
 	(*testBinaryTree).insertToTree(2, 1, 3);
@@ -602,10 +629,6 @@ int main() {
 	cout << endl << "Copied Test Binary Tree:" << endl;
 	cout << "Overloaded ostream operator (preorder): ";
 	cout << (*testCopyBinaryTree) << endl;
-	cout << "In order traversal: ";
-	(*testCopyBinaryTree).inOrderTreeTraversal();
-	cout << "Post order traversal: ";
-	(*testCopyBinaryTree).postOrderTreeTraversal();
 	cout << "Size of tree: " << (*testCopyBinaryTree).getTreeSize() << endl;
 	cout << "Height of tree: " << (*testCopyBinaryTree).getTreeHeight() << endl;
 
