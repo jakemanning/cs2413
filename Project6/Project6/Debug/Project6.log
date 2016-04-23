@@ -1,2 +1,10 @@
 ﻿  Project6.cpp
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(73): warning C4250: 'Vector<int>': inherits 'ArrayClass<int>::ArrayClass<int>::operator []' via dominance
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(123): note: see declaration of 'ArrayClass<int>::operator []'
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(353): note: see reference to class template instantiation 'Vector<int>' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(352): note: while compiling class template member function 'void ParentMultiTree<ArrayClass<int>>::display(std::ostream &,const int &)'
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(347): note: see reference to function template instantiation 'void ParentMultiTree<ArrayClass<int>>::display(std::ostream &,const int &)' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(328): note: while compiling class template member function 'ParentMultiTree<ArrayClass<int>>::ParentMultiTree(const ParentMultiTree<ArrayClass<int>> &)'
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(513): note: see reference to function template instantiation 'ParentMultiTree<ArrayClass<int>>::ParentMultiTree(const ParentMultiTree<ArrayClass<int>> &)' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project6\project6\project6.cpp(493): note: see reference to class template instantiation 'ParentMultiTree<ArrayClass<int>>' being compiled
   Project6.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project6\Debug\Project6.exe
