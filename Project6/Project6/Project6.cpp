@@ -1,10 +1,11 @@
 #include <iostream>
+#include <queue>
 using namespace std;
 
 #pragma region Exceptions
 class Exception { };																	// Generic, all exceptions derive from this
-class BinaryTreeException : public Exception {};										// Generic BinaryTree Exception
-class BinaryTreeMemory : public BinaryTreeException {};									// In case the binary tree has transferred incorrect information from the datatype
+class TreeException : public Exception {};												// Generic Tree Exception
+class TreeMemory : public TreeException {};												// In case the Tree has transferred incorrect information from the datatype
 class ArrayException : public Exception { };											// Generic array exception, all array exceptions derive from
 class ArrayMemoryException : public ArrayException { };									// In case the array created causes an error
 class ArrayBoundsException : public ArrayException { };									// In case the user asked for an index that was out of bounds
@@ -272,21 +273,21 @@ bool Vector<DataType>::contains(const DataType& var) {
 
 #pragma endregion Classes
 
-#pragma region ParentBinaryTree
+#pragma region ParentMultiTree
 template <class DT>
 class ParentMultiTree {
 protected:
 	DT* _parentArray;																	// Array containing the indexes of the parent
 	DT* _childOrderArray;																// Array containing the order of the children
 	int _numNodes;																		// Size of both arrays
-	void copy(const ParentMultiTree<DT>& binaryTree);									// Copy constructor
+	void copy(const ParentMultiTree<DT>& multiTree);									// Copy constructor
 	int max(int firstNumber, int secondNumber);											// Finds the maximum value between two integers
 public:
 	ParentMultiTree();																	// Empty constructor, initializes empty parentArray, childOrderArray, and sets numNodes to 0
 	ParentMultiTree(int size);															// Initializer, creates a parentArray, and childOrderArray with 'size' number of zeroes, and sets numNodes to size
 	~ParentMultiTree();																	// Destructor, deletes the parentArray, childOrderArray, and sets numNodes to NULL
-	ParentMultiTree(const ParentMultiTree<DT>& binaryTree);								// Copy constructor, constructs a tree with the supplied tree
-	void operator= (const ParentMultiTree<DT>& binaryTree);								// Overloaded equals to operator, creates an equivalent tree with the supplied tree
+	ParentMultiTree(const ParentMultiTree<DT>& multiTree);								// Copy constructor, constructs a tree with the supplied tree
+	void operator= (const ParentMultiTree<DT>& multiTree);								// Overloaded equals to operator, creates an equivalent tree with the supplied tree
 	void display(ostream& s, const int& parentValue);									// Recursively calls itself to show preorder traversal of the supplied tree
 	int findIndexForValue(const int& value, const int& startingFrom);					// Finds the index for the given value, starting from a particular index in the tree
 	int nodeChildrenSize(const int& parentValue);										// Recursively calls itself to find the size of the specific tree given the parentNode value
@@ -300,6 +301,7 @@ public:
 	void preOrderTreeTraversal();														// Traverses the entire tree, preOrder
 	void preOrderChildrenTraversal(const int& parentValue);								// Traverses the tree in a recursive fashion: root, the left sub tree through the right subtree
 	void insertToTree(const int& parent, DT& children);									// Inserts nodes to the tree, starting from the parent, given the parentNode, from the left to the right and fills the childOrderArray
+	void printLevelByLevel();															// Prints level by level using a STL Queue
 };
 template <class DT>
 ParentMultiTree<DT>::ParentMultiTree() {
@@ -313,7 +315,7 @@ ParentMultiTree<DT>::ParentMultiTree(int size) {
 	_childOrderArray = new DT(size, 0);
 	_numNodes = size;
 	if (_parentArray == NULL || _childOrderArray == NULL) {
-		throw BinaryTreeMemory();
+		throw TreeMemory();
 	}
 }
 template <class DT>
@@ -325,26 +327,26 @@ ParentMultiTree<DT>::~ParentMultiTree() {
 	_numNodes = NULL;
 }
 template <class DT>
-ParentMultiTree<DT>::ParentMultiTree(const ParentMultiTree<DT>& binaryTree) {
-	copy(binaryTree);
+ParentMultiTree<DT>::ParentMultiTree(const ParentMultiTree<DT>& multiTree) {
+	copy(multiTree);
 }
 template<class DT>
-void ParentMultiTree<DT>::operator=(const ParentMultiTree<DT>& binaryTree) {
-	copy(binaryTree);
+void ParentMultiTree<DT>::operator=(const ParentMultiTree<DT>& multiTree) {
+	copy(multiTree);
 }
 template <class DT>
-void ParentMultiTree<DT>::copy(const ParentMultiTree<DT>& binaryTree) {
-	_parentArray = binaryTree._parentArray;
-	_childOrderArray = binaryTree._childOrderArray;
-	_numNodes = binaryTree._numNodes;
+void ParentMultiTree<DT>::copy(const ParentMultiTree<DT>& multiTree) {
+	_parentArray = multiTree._parentArray;
+	_childOrderArray = multiTree._childOrderArray;
+	_numNodes = multiTree._numNodes;
 	if (_parentArray == NULL || _childOrderArray == NULL) {
-		throw BinaryTreeMemory();
+		throw TreeMemory();
 	}
 }
 template<class DT>
-ostream & operator<<(ostream& s, ParentMultiTree<DT>& binaryTree)
+ostream & operator<<(ostream& s, ParentMultiTree<DT>& multiTree)
 {
-	binaryTree.display(s, binaryTree.getRoot());
+	multiTree.display(s, multiTree.getRoot());
 	return s;
 }
 template<class DT>
@@ -465,7 +467,7 @@ void ParentMultiTree<DT>::insertToTree(const int& parent, DT& children) {
 	// Only happens first time
 	if (getRoot() == -1) {
 		if (parent >= _numNodes) {
-			throw BinaryTreeMemory();
+			throw TreeMemory();
 		}
 		else {
 			(*_parentArray)[parent] = -1;
@@ -474,12 +476,43 @@ void ParentMultiTree<DT>::insertToTree(const int& parent, DT& children) {
 	}
 	for (int i = 0; i < children.size(); ++i) {
 		if (children[i] > _numNodes) {
-			throw BinaryTreeMemory();
+			throw TreeMemory();
 		}
 		else {
 			(*_parentArray)[children[i]] = parent;
 			(*_childOrderArray)[children[i]] = i;
 		}
+	}
+}
+template <class DT>
+void ParentMultiTree<DT>::printLevelByLevel() {
+	int level = 0;
+	int temp;
+	int element;
+	queue<int> myQueue;
+	queue<int> levelQueue;
+
+	// Priming
+	myQueue.push(getRoot());
+	levelQueue.push(1);
+	while (!myQueue.empty()) {
+		element = myQueue.front();
+		myQueue.pop();
+		temp = levelQueue.front();
+		levelQueue.pop();
+		if (level != temp) {
+			cout << endl;
+			level = temp;
+			cout << "Level " << level << ": ";
+		}
+
+		Vector<int> children = reorder(getChildren(element), getChildrenOrder(element));
+		for (int i = 0; i < children.size(); ++i) {
+			myQueue.push(children[i]);
+			levelQueue.push(level + 1);
+		}
+
+		cout << element << " ";
 	}
 }
 #pragma endregion Methods
@@ -489,8 +522,9 @@ int main() {
 	int numNodes;
 	int parent;
 
+	// Reads in the number of nodes and constructs a new multi tree
 	cin >> totalNumberOfNodes;
-	ParentMultiTree<ArrayClass<int>>* parentBinaryTree = new ParentMultiTree<ArrayClass<int>>(totalNumberOfNodes);
+	ParentMultiTree<ArrayClass<int>>* parentMultiTree = new ParentMultiTree<ArrayClass<int>>(totalNumberOfNodes);
 
 	while (cin >> parent) {
 		cin >> numNodes;
@@ -501,51 +535,58 @@ int main() {
 			nodes[i] = temp;
 		}
 		if (numNodes > 0) {
-			(*parentBinaryTree).insertToTree(parent, nodes);
+			(*parentMultiTree).insertToTree(parent, nodes);
 		}
 	}
-	cout << "Original Binary Tree:" << endl;
+	cout << "Original Multi Tree:" << endl;
 	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*parentBinaryTree) << endl;
-	cout << "Size of tree: " << (*parentBinaryTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*parentBinaryTree).getTreeChildrenHeight() << endl;
+	cout << (*parentMultiTree) << endl;
+	cout << "Size of tree: " << (*parentMultiTree).getTreeChildrenSize() << endl;
+	cout << "Height of tree: " << (*parentMultiTree).getTreeChildrenHeight() << endl;
 
-	ParentMultiTree<ArrayClass<int>>* testCopyBinaryTree = new ParentMultiTree<ArrayClass<int>>(*parentBinaryTree);
-	cout << endl << "Copied Binary Tree:" << endl;
-	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*testCopyBinaryTree) << endl;
-	cout << "Size of tree: " << (*testCopyBinaryTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*testCopyBinaryTree).getTreeChildrenHeight() << endl;
-	cout << "Preorder tree traversal: "; (*testCopyBinaryTree).preOrderTreeTraversal();
+	// EXTRA CREDIT
+	cout << "Printing level by level: ";
+	(*parentMultiTree).printLevelByLevel();
 	cout << endl;
 
-	ParentMultiTree<ArrayClass<int>>* testBinaryTree = new ParentMultiTree<ArrayClass<int>>(26);
-	ArrayClass<int> a(4); a[0] = 2; a[1] = 9; a[2] = 14; a[3] = 13; (*testBinaryTree).insertToTree(25, a);
-	ArrayClass<int> b(2); b[0] = 4; b[1] = 1; (*testBinaryTree).insertToTree(2, b);
-	ArrayClass<int> c(1); c[0] = 8; (*testBinaryTree).insertToTree(4, c);
-	ArrayClass<int> d(1); d[0] = 10; (*testBinaryTree).insertToTree(8, d);
-	ArrayClass<int> e(1); e[0] = 3; (*testBinaryTree).insertToTree(10, e);
-	ArrayClass<int> f(2); f[0] = 11; f[1] = 7; (*testBinaryTree).insertToTree(1, f);
-	ArrayClass<int> g(3); g[0] = 18; g[1] = 17; g[2] = 19; (*testBinaryTree).insertToTree(11, g);
-	ArrayClass<int> h(1); h[0] = 20; (*testBinaryTree).insertToTree(18, h);
-	ArrayClass<int> i(1); i[0] = 0; (*testBinaryTree).insertToTree(17, i);
-	ArrayClass<int> j(2); j[0] = 5; j[1] = 6; (*testBinaryTree).insertToTree(9, j);
-	ArrayClass<int> k(1); k[0] = 21; (*testBinaryTree).insertToTree(14, k);
-	ArrayClass<int> l(1); l[0] = 24; (*testBinaryTree).insertToTree(21, l);
-	ArrayClass<int> m(5); m[0] = 12; m[1] = 15; m[2] = 16; m[3] = 23; m[4] = 22; (*testBinaryTree).insertToTree(13, m);
-	testCopyBinaryTree = testBinaryTree;
-	cout << endl << "Copied Test Binary Tree:" << endl;
+	ParentMultiTree<ArrayClass<int>>* testCopyMultiTree = new ParentMultiTree<ArrayClass<int>>(*parentMultiTree);
+	cout << endl << "Copied Multi Tree:" << endl;
 	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*testCopyBinaryTree) << endl;
-	cout << "Size of tree: " << (*testCopyBinaryTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*testCopyBinaryTree).getTreeChildrenHeight() << endl;
+	cout << (*testCopyMultiTree) << endl;
+	cout << "Size of tree: " << (*testCopyMultiTree).getTreeChildrenSize() << endl;
+	cout << "Height of tree: " << (*testCopyMultiTree).getTreeChildrenHeight() << endl;
+	cout << "Preorder tree traversal: "; (*testCopyMultiTree).preOrderTreeTraversal();
+	cout << endl;
 
-	delete parentBinaryTree;
-	delete testCopyBinaryTree;
-	
-	// testBinaryTree already was deleted when assigned to testCopyBinaryTree
-	cout << endl << "Original after deleting: " << (*parentBinaryTree) << endl;
-	cout << "Copied Binary Tree after deleting: " << (*testCopyBinaryTree) << endl;
-	cout << "Copied Test Binary Tree after deleting: " << (*testCopyBinaryTree) << endl;
+	ParentMultiTree<ArrayClass<int>>* testMultiTree = new ParentMultiTree<ArrayClass<int>>(26);
+	ArrayClass<int> a(4); a[0] = 2; a[1] = 9; a[2] = 14; a[3] = 13; (*testMultiTree).insertToTree(25, a);
+	ArrayClass<int> b(2); b[0] = 4; b[1] = 1; (*testMultiTree).insertToTree(2, b);
+	ArrayClass<int> c(1); c[0] = 8; (*testMultiTree).insertToTree(4, c);
+	ArrayClass<int> d(1); d[0] = 10; (*testMultiTree).insertToTree(8, d);
+	ArrayClass<int> e(1); e[0] = 3; (*testMultiTree).insertToTree(10, e);
+	ArrayClass<int> f(2); f[0] = 11; f[1] = 7; (*testMultiTree).insertToTree(1, f);
+	ArrayClass<int> g(3); g[0] = 18; g[1] = 17; g[2] = 19; (*testMultiTree).insertToTree(11, g);
+	ArrayClass<int> h(1); h[0] = 20; (*testMultiTree).insertToTree(18, h);
+	ArrayClass<int> i(1); i[0] = 0; (*testMultiTree).insertToTree(17, i);
+	ArrayClass<int> j(2); j[0] = 5; j[1] = 6; (*testMultiTree).insertToTree(9, j);
+	ArrayClass<int> k(1); k[0] = 21; (*testMultiTree).insertToTree(14, k);
+	ArrayClass<int> l(1); l[0] = 24; (*testMultiTree).insertToTree(21, l);
+	ArrayClass<int> m(5); m[0] = 12; m[1] = 15; m[2] = 16; m[3] = 23; m[4] = 22; (*testMultiTree).insertToTree(13, m);
+	testCopyMultiTree = testMultiTree;
+	cout << endl << "Copied Test Multi Tree:" << endl;
+	cout << "Overloaded ostream operator (preorder): ";
+	cout << (*testCopyMultiTree) << endl;
+	cout << "Size of tree: " << (*testCopyMultiTree).getTreeChildrenSize() << endl;
+	cout << "Height of tree: " << (*testCopyMultiTree).getTreeChildrenHeight() << endl;
+
+	delete parentMultiTree;
+	delete testCopyMultiTree;
+
+	// testMultiTree already was deleted when assigned to testCopyMultiTree
+	cout << endl << "Original after deleting: " << (*parentMultiTree) << endl;
+	cout << "Copied Multi Tree after deleting: " << (*testCopyMultiTree) << endl;
+	cout << "Copied Test Multi Tree after deleting: " << (*testCopyMultiTree) << endl;
+
+
 	return 0;
 }
