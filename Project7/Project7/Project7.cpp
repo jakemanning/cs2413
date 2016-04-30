@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <list>
 using namespace std;
 
 #pragma region Exceptions
@@ -517,76 +518,79 @@ void ParentMultiTree<DT>::printLevelByLevel() {
 }
 #pragma endregion Methods
 
-int main() {
-	int totalNumberOfNodes;
-	int numNodes;
-	int parent;
+#pragma region GraphAdjList
+template <class DT>
+class GraphAdjList {
+protected:
+	ArrayClass<list<DT>*>* _adjList;
+	ArrayClass<bool>* _visited;
+	ParentMultiTree<ArrayClass<DT>>* _parentArray;
+	int _numNodes;																		// Number of nodes
+	int _numEdges;																		// Number of edges
+	void _setupForSearch();
+public:
+	GraphAdjList(int numNodes, int numEdges);											// Initializer constructor, with numNodes and numEdges as input
+	~GraphAdjList();																	// Destructor, removes any unused memory
+	void addEdge(int x, int y);															// Adds a vertex between vertex 'x' and vertex 'y'
+	ParentMultiTree<ArrayClass<DT>>& dfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the depth first search tree
+	ParentMultiTree<ArrayClass<DT>>& bfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the breadth first search tree
+};
+template <class DT>
+GraphAdjList<DT>::GraphAdjList(int numNodes, int numEdges) {
+	_numNodes = numNodes;
+	_numEdges = numEdges;
+	_adjList = new ArrayClass<list<DT>*>(numNodes, NULL);
+	_visited = new ArrayClass<bool>(numNodes);
+}
+template <class DT>
+GraphAdjList<DT>::~GraphAdjList() {
 
-	// Reads in the number of nodes and constructs a new multi tree
-	cin >> totalNumberOfNodes;
-	ParentMultiTree<ArrayClass<int>>* parentMultiTree = new ParentMultiTree<ArrayClass<int>>(totalNumberOfNodes);
-
-	while (cin >> parent) {
-		cin >> numNodes;
-		ArrayClass<int> nodes(numNodes);
-		for (int i = 0; i < numNodes; ++i) {
-			int temp;
-			cin >> temp;
-			nodes[i] = temp;
-		}
-		if (numNodes > 0) {
-			(*parentMultiTree).insertToTree(parent, nodes);
-		}
+}
+template <class DT>
+void GraphAdjList<DT>::addEdge(int x, int y) {
+	if ((*_adjList)[x] == NULL) {
+		(*_adjList)[x] = new list<DT>();
 	}
-	cout << "Original Multi Tree:" << endl;
-	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*parentMultiTree) << endl;
-	cout << "Size of tree: " << (*parentMultiTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*parentMultiTree).getTreeChildrenHeight() << endl;
+	if ((*_adjList)[y] == NULL) {
+		(*_adjList)[y] = new list<DT>();
+	}
+	list<int>* firstList = (*_adjList)[x];
+	list<int>* secondList = (*_adjList)[y];
+	(*firstList).push_back(y);
+	(*secondList).push_back(x);
+}
+template <class DT>
+ParentMultiTree<ArrayClass<DT>>& GraphAdjList<DT>::dfs(int x) {
+	_setupForSearch();
+}
+template <class DT>
+ParentMultiTree<ArrayClass<DT>>& GraphAdjList<DT>::bfs(int x) {
+	_setupForSearch();
+}
+template <class DT>
+ostream & operator<<(ostream& s, GraphAdjList<DT>& adjList) {
 
-	// EXTRA CREDIT
-	cout << "Printing level by level: ";
-	(*parentMultiTree).printLevelByLevel();
-	cout << endl;
+}
+template <class DT>
+void GraphAdjList<DT>::_setupForSearch() {
+	if (_parentArray != NULL) {
+		delete _parentArray;
+	}
+	_parentArray = new ParentMultiTree<ArrayClass<DT>>(_numNodes);
+	for (int i = 0; i < _numNodes; ++i) {
+		visited[i] = false;
+	}
+}
+#pragma endregion Methods
 
-	ParentMultiTree<ArrayClass<int>>* testCopyMultiTree = new ParentMultiTree<ArrayClass<int>>(*parentMultiTree);
-	cout << endl << "Copied Multi Tree:" << endl;
-	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*testCopyMultiTree) << endl;
-	cout << "Size of tree: " << (*testCopyMultiTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*testCopyMultiTree).getTreeChildrenHeight() << endl;
-	cout << "Preorder tree traversal: "; (*testCopyMultiTree).preOrderTreeTraversal();
-	cout << endl;
-
-	ParentMultiTree<ArrayClass<int>>* testMultiTree = new ParentMultiTree<ArrayClass<int>>(26);
-	ArrayClass<int> a(4); a[0] = 2; a[1] = 9; a[2] = 14; a[3] = 13; (*testMultiTree).insertToTree(25, a);
-	ArrayClass<int> b(2); b[0] = 4; b[1] = 1; (*testMultiTree).insertToTree(2, b);
-	ArrayClass<int> c(1); c[0] = 8; (*testMultiTree).insertToTree(4, c);
-	ArrayClass<int> d(1); d[0] = 10; (*testMultiTree).insertToTree(8, d);
-	ArrayClass<int> e(1); e[0] = 3; (*testMultiTree).insertToTree(10, e);
-	ArrayClass<int> f(2); f[0] = 11; f[1] = 7; (*testMultiTree).insertToTree(1, f);
-	ArrayClass<int> g(3); g[0] = 18; g[1] = 17; g[2] = 19; (*testMultiTree).insertToTree(11, g);
-	ArrayClass<int> h(1); h[0] = 20; (*testMultiTree).insertToTree(18, h);
-	ArrayClass<int> i(1); i[0] = 0; (*testMultiTree).insertToTree(17, i);
-	ArrayClass<int> j(2); j[0] = 5; j[1] = 6; (*testMultiTree).insertToTree(9, j);
-	ArrayClass<int> k(1); k[0] = 21; (*testMultiTree).insertToTree(14, k);
-	ArrayClass<int> l(1); l[0] = 24; (*testMultiTree).insertToTree(21, l);
-	ArrayClass<int> m(5); m[0] = 12; m[1] = 15; m[2] = 16; m[3] = 23; m[4] = 22; (*testMultiTree).insertToTree(13, m);
-	testCopyMultiTree = testMultiTree;
-	cout << endl << "Copied Test Multi Tree:" << endl;
-	cout << "Overloaded ostream operator (preorder): ";
-	cout << (*testCopyMultiTree) << endl;
-	cout << "Size of tree: " << (*testCopyMultiTree).getTreeChildrenSize() << endl;
-	cout << "Height of tree: " << (*testCopyMultiTree).getTreeChildrenHeight() << endl;
-
-	delete parentMultiTree;
-	delete testCopyMultiTree;
-
-	// testMultiTree already was deleted when assigned to testCopyMultiTree
-	cout << endl << "Original after deleting: " << (*parentMultiTree) << endl;
-	cout << "Copied Multi Tree after deleting: " << (*testCopyMultiTree) << endl;
-	cout << "Copied Test Multi Tree after deleting: " << (*testCopyMultiTree) << endl;
-
-
+int main() {
+	int numNodes, numEdges;
+	cin >> numNodes >> numEdges;
+	GraphAdjList<int> *myGraph = new GraphAdjList<int>(numNodes, numEdges);
+	for (int i = 0; i < numEdges; ++i) {
+		int x, y;
+		cin >> x >> y;
+		(*myGraph).addEdge(x, y);
+	}
 	return 0;
 }
