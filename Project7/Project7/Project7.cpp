@@ -72,7 +72,7 @@ public:
 	virtual void setIncFactor(int f);													// Resets the incedent factor to necessary size
 	void setCapacity(int c);															// Resizes underlying array to the specified capacit
 	bool contains(const DataType& i);													// Checks whether the vector contains a member of the specified dataType
-	ArrayClass<DataType>& underlyingArray();											// Returns the underlying ArrayClass
+	ArrayClass<DataType>* underlyingArray();											// Returns the underlying ArrayClass
 };
 #pragma region array
 template <class DataType>
@@ -133,7 +133,7 @@ void ArrayClass<DataType>::operator=(const ArrayClass<DataType>& ac) {
 	copy(ac);
 }
 template <class DataType>
-ostream& operator << (ostream& s, AbstractArrayClass<DataType>& ac) {
+ostream& operator<< (ostream& s, AbstractArrayClass<DataType>& ac) {
 	for (int i = 0; i < ac.size(); ++i) {
 		s << ac[i];
 	}
@@ -272,10 +272,10 @@ bool Vector<DataType>::contains(const DataType& var) {
 	return false;
 }
 template <class DataType>
-ArrayClass<DataType>& Vector<DataType>::underlyingArray() {
-	ArrayClass<DataType> newArr(_currSize, 0);
+ArrayClass<DataType>* Vector<DataType>::underlyingArray() {
+	ArrayClass<DataType> *newArr = new ArrayClass<DataType>(_currSize, 0);
 	for (int i = 0; i < _currSize; ++i) {
-		newArr[i] = paObject[i];
+		(*newArr)[i] = paObject[i];
 	}
 	return _currSize != 0 ? newArr : NULL;
 }
@@ -299,7 +299,8 @@ public:
 	ParentMultiTree(const ParentMultiTree<DT>& multiTree);								// Copy constructor, constructs a tree with the supplied tree
 	void operator= (const ParentMultiTree<DT>& multiTree);								// Overloaded equals to operator, creates an equivalent tree with the supplied tree
 	void display(ostream& s, const int& parentValue);									// Recursively calls itself to show preorder traversal of the supplied tree
-	int findIndexForValue(const int& value, const int& startingFrom);					// Finds the index for the given value, starting from a particular index in the tree
+	int indexOf(const int& value);														// Finds the first index for the given value
+	int findHighestChildOrder(const int& value);										// Finds the last possible index for the given value
 	int nodeChildrenSize(const int& parentValue);										// Recursively calls itself to find the size of the specific tree given the parentNode value
 	int nodeChildrenHeight(const int& parentValue);										// Recursively calls itself to find the height of the specific tree given the parentNode value
 	int getTreeChildrenHeight();														// Returns the height of the entire tree															
@@ -312,6 +313,9 @@ public:
 	void preOrderChildrenTraversal(const int& parentValue);								// Traverses the tree in a recursive fashion: root, the left sub tree through the right subtree
 	void insertToTree(const int& parent, DT& children);									// Inserts nodes to the tree, starting from the parent, given the parentNode, from the left to the right and fills the childOrderArray
 	void printLevelByLevel();															// Prints level by level using a STL Queue
+	void insertSingleNode(const int& parent, const int& child);
+	void debug();
+	void clear();
 };
 template <class DT>
 ParentMultiTree<DT>::ParentMultiTree() {
@@ -321,8 +325,8 @@ ParentMultiTree<DT>::ParentMultiTree() {
 }
 template <class DT>
 ParentMultiTree<DT>::ParentMultiTree(int size) {
-	_parentArray = new DT(size, 0);
-	_childOrderArray = new DT(size, 0);
+	_parentArray = new DT(size, -2);
+	_childOrderArray = new DT(size, -2);
 	_numNodes = size;
 	if (_parentArray == NULL || _childOrderArray == NULL) {
 		throw TreeMemory();
@@ -371,6 +375,23 @@ void ParentMultiTree<DT>::display(ostream& s, const int& parentValue)
 		display(s, children[i]);
 	}
 }
+template <class DT>
+void ParentMultiTree<DT>::debug() {
+	cout << "Printing underlying tree array: " << endl;
+	for (int i = 0; i < _numNodes; ++i) {
+		cout << (*_parentArray)[i] << endl;
+	}
+	cout << "Child order: " << endl;
+	for (int i = 0; i < _numNodes; ++i) {
+		cout << (*_childOrderArray)[i] << endl;
+	}
+}
+template <class DT>
+void ParentMultiTree<DT>::clear() {
+	for (int i = 0; i < _numNodes; ++i) {
+		(*_parentArray)[i] = -2;
+	}
+}
 template<class DT>
 int ParentMultiTree<DT>::max(int firstNumber, int secondNumber) {
 	return firstNumber >= secondNumber ? firstNumber : secondNumber;
@@ -412,7 +433,7 @@ int ParentMultiTree<DT>::nodeChildrenHeight(const int& parentValue) {
 template<class DT>
 int ParentMultiTree<DT>::getRoot()
 {
-	return findIndexForValue(-1, 0);
+	return indexOf(-1);
 }
 template <class DT>
 Vector<int>& ParentMultiTree<DT>::getChildren(const int& parentValue) {
@@ -438,7 +459,7 @@ Vector<int>& ParentMultiTree<DT>::getChildrenOrder(const int& parentValue) {
 }
 template <class DT>
 Vector<int> ParentMultiTree<DT>::reorder(Vector<int>& arr, Vector<int>& index) {
-	DT* temp = new DT(arr.size());
+	DT* temp = new DT(arr.size(), 0);
 	for (int i = 0; i < arr.size(); ++i) {
 		(*temp)[index[i]] = arr[i];
 	}
@@ -464,13 +485,23 @@ void ParentMultiTree<DT>::preOrderChildrenTraversal(const int& parentValue) {
 	}
 }
 template<class DT>
-int ParentMultiTree<DT>::findIndexForValue(const int& value, const int& startingFrom) {
-	for (int i = startingFrom; i < _numNodes; ++i) {
+int ParentMultiTree<DT>::indexOf(const int& value) {
+	for (int i = 0; i < _numNodes; ++i) {
 		if ((*_parentArray)[i] == value) {
 			return i;
 		}
 	}
 	return -1;
+}
+template<class DT>
+int ParentMultiTree<DT>::findHighestChildOrder(const int& value) {
+	int maxChild = -1;
+	for (int i = 0; i < _numNodes; ++i) {
+		if ((*_parentArray)[i] == value) {
+			maxChild = max(maxChild, (*_childOrderArray)[i]);
+		}
+	}
+	return maxChild;
 }
 template <class DT>
 void ParentMultiTree<DT>::insertToTree(const int& parent, DT& children) {
@@ -485,13 +516,34 @@ void ParentMultiTree<DT>::insertToTree(const int& parent, DT& children) {
 		}
 	}
 	for (int i = 0; i < children.size(); ++i) {
-		if (children[i] > _numNodes) {
+		if (children[i] >= _numNodes) {
 			throw TreeMemory();
 		}
 		else {
 			(*_parentArray)[children[i]] = parent;
 			(*_childOrderArray)[children[i]] = i;
 		}
+	}
+}
+template <class DT>
+void ParentMultiTree<DT>::insertSingleNode(const int& parent, const int& child) {
+	// Only happens first time
+	if (getRoot() == -1) {
+		if (parent >= _numNodes) {
+			throw TreeMemory();
+		}
+		else {
+			(*_parentArray)[parent] = -1;
+			(*_childOrderArray)[parent] = -1;
+		}
+	}
+	if (child >= _numNodes) {
+		throw TreeMemory();
+	}
+	else {
+		int lastOrder = findHighestChildOrder(parent);
+		(*_childOrderArray)[child] = lastOrder + 1;
+		(*_parentArray)[child] = parent;
 	}
 }
 template <class DT>
@@ -535,8 +587,7 @@ class GraphAdjList {
 protected:
 	ArrayClass<list<DT>*>* _adjList;
 	ArrayClass<bool>* _visited;
-	ParentMultiTree<ArrayClass<DT>>* _parentArray;
-	ArrayClass<DT>* _testParentArray;
+	ParentMultiTree<ArrayClass<DT>>* _parentTree;
 	int _numNodes;																		// Number of nodes
 	int _numEdges;																		// Number of edges
 	void _setupForSearch();
@@ -545,8 +596,8 @@ public:
 	GraphAdjList(int numNodes, int numEdges);											// Initializer constructor, with numNodes and numEdges as input
 	~GraphAdjList();																	// Destructor, removes any unused memory
 	void addEdge(int x, int y);															// Adds a vertex between vertex 'x' and vertex 'y'
-	ArrayClass<DT>& dfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the depth first search tree
-	ArrayClass<DT>& bfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the breadth first search tree
+	ParentMultiTree<ArrayClass<DT>>* dfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the depth first search tree
+	ParentMultiTree<ArrayClass<DT>>* bfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the breadth first search tree
 };
 template <class DT>
 GraphAdjList<DT>::GraphAdjList(int numNodes, int numEdges) {
@@ -554,12 +605,15 @@ GraphAdjList<DT>::GraphAdjList(int numNodes, int numEdges) {
 	_numEdges = numEdges;
 	_adjList = new ArrayClass<list<DT>*>(numNodes, NULL);
 	_visited = new ArrayClass<bool>(numNodes, false);
-	_parentArray = new ParentMultiTree<ArrayClass<DT>>(numNodes);
-	_testParentArray = new ArrayClass<DT>(numNodes, -1);
+	_parentTree = new ParentMultiTree<ArrayClass<DT>>(numNodes);
 }
 template <class DT>
 GraphAdjList<DT>::~GraphAdjList() {
-
+	_numNodes = NULL;
+	_numEdges = NULL;
+	delete _adjList;
+	delete _visited;
+	delete _parentTree;
 }
 template <class DT>
 void GraphAdjList<DT>::addEdge(int x, int y) {
@@ -575,36 +629,27 @@ void GraphAdjList<DT>::addEdge(int x, int y) {
 	(*secondList).push_back(x);
 }
 template <class DT>
-ArrayClass<DT>& GraphAdjList<DT>::dfs(int x) {
+ParentMultiTree<ArrayClass<DT>>* GraphAdjList<DT>::dfs(int x) {
 	_setupForSearch();
 	_dfs(x);
-	return	(*_testParentArray);
+	return	_parentTree;
 }
 template <class DT>
 void GraphAdjList<DT>::_dfs(int x) {
 	(*_visited)[x] = true;
 	// Find unvisited adjacent nodes, then call DFS recursively immediately
 	list<int>* dfsList = (*_adjList)[x];
-	//Vector<int>* myVector = new Vector<int>((*dfsList).size());
 	list<int>::iterator t = (*dfsList).begin();
 	while (t != (*dfsList).end()) {
 		if (!(*_visited)[*t]) {
-			//(*myVector).add(*t);
-			(*_testParentArray)[*t] = x;
+			(*_parentTree).insertSingleNode(x, (*t));
 			_dfs(*t);
 		}
 		++t;
 	}
-	/*if (myVector != NULL && (*myVector).size() != 0) {
-		cout << x << endl;
-		for (int i = 0; i < (*myVector).size(); ++i) {
-			cout << (*myVector)[i] << endl;
-		}
-		(*_parentArray).insertToTree(x, (*myVector).underlyingArray());
-	}*/
 }
 template <class DT>
-ArrayClass<DT>& GraphAdjList<DT>::bfs(int x) {
+ParentMultiTree<ArrayClass<DT>>* GraphAdjList<DT>::bfs(int x) {
 	_setupForSearch();
 	(*_visited)[x] = true;
 	queue<int> bfsQueue;
@@ -618,17 +663,17 @@ ArrayClass<DT>& GraphAdjList<DT>::bfs(int x) {
 			if (!(*_visited)[*t]) {
 				(*_visited)[*t] = true;
 				bfsQueue.push(*t);
-				(*_testParentArray)[*t] = x;
+				(*_parentTree).insertSingleNode(x, (*t));
 			}
 			++t;
 		}
 	}
-	return (*_testParentArray);
+	return _parentTree;
 }
 template <class DT>
 ostream & operator<< (ostream & s, GraphAdjList<DT>& graph) {
 	for (int i = 0; i < graph._numNodes; ++i) {
-		s << i << ": ";
+		s << "Nodes related to " << i << ": ";
 		list<int>* indList = (*graph._adjList)[i];
 		if (indList != NULL) {
 			list<int>::iterator t = (*indList).begin();
@@ -645,19 +690,16 @@ ostream & operator<< (ostream & s, GraphAdjList<DT>& graph) {
 }
 template <class DT>
 void GraphAdjList<DT>::_setupForSearch() {
-	if (_parentArray != NULL) {
-		delete _parentArray;
-	}
-	_parentArray = new ParentMultiTree<ArrayClass<DT>>(_numNodes);
+	(*_parentTree).clear();
 	for (int i = 0; i < _numNodes; ++i) {
 		(*_visited)[i] = false;
-		(*_testParentArray)[i] = -1;
 	}
 }
 #pragma endregion Methods
 
 int main() {
 	int numNodes, numEdges;
+	int searchNode = 0;
 	cin >> numNodes >> numEdges;
 	GraphAdjList<int> *myGraph = new GraphAdjList<int>(numNodes, numEdges);
 	for (int i = 0; i < numEdges; ++i) {
@@ -665,17 +707,20 @@ int main() {
 		cin >> x >> y;
 		(*myGraph).addEdge(x, y);
 	}
-	cout << "Overloaded Operator:" << endl;
+	cout << "Overloaded Operator - Graph:" << endl;
 	cout << (*myGraph) << endl;
-	cout << "Breadth First Search on 0:" << endl;
-	ArrayClass<int> bfsTest = (*myGraph).bfs(0);
-	for (int i = 0; i < bfsTest.size(); ++i) {
-		cout << bfsTest[i] << endl;
-	}
-	cout << "Depth First Search on 0:" << endl;
-	ArrayClass<int> dfsTest = (*myGraph).dfs(0);
-	for (int i = 0; i < dfsTest.size(); ++i) {
-		cout << dfsTest[i] << endl;
-	}
+
+	cout << endl << "Depth First Search on " << searchNode << ":" << endl;
+	ParentMultiTree<ArrayClass<int>>* dfsTest = (*myGraph).dfs(searchNode);
+	cout << (*dfsTest) << endl;
+	(*dfsTest).printLevelByLevel();
+	cout << endl;
+
+	cout << endl << "Breadth First Search on " << searchNode << ":" << endl;
+	ParentMultiTree<ArrayClass<int>>* bfsTest = (*myGraph).bfs(searchNode);
+	cout << (*bfsTest) << endl;
+	(*bfsTest).printLevelByLevel();
+	cout << endl;
+
 	return 0;
 }

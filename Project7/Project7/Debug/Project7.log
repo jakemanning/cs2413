@@ -1,2 +1,28 @@
 ﻿  Project7.cpp
+c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(76): warning C4250: 'Vector<int>': inherits 'ArrayClass<DT>::ArrayClass<DT>::operator []' via dominance
+          with
+          [
+              DT=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(126): note: see declaration of 'ArrayClass<DT>::operator []'
+          with
+          [
+              DT=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(571): note: see reference to class template instantiation 'Vector<int>' being compiled
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(550): note: while compiling class template member function 'void ParentMultiTree<ArrayClass<DT>>::printLevelByLevel(void)'
+          with
+          [
+              DT=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(716): note: see reference to function template instantiation 'void ParentMultiTree<ArrayClass<DT>>::printLevelByLevel(void)' being compiled
+          with
+          [
+              DT=int
+          ]
+  c:\users\jake\documents\visual studio 2015\projects\cs2413\cs2413\project7\project7\project7.cpp(715): note: see reference to class template instantiation 'ParentMultiTree<ArrayClass<DT>>' being compiled
+          with
+          [
+              DT=int
+          ]
   Project7.vcxproj -> C:\Users\Jake\Documents\Visual Studio 2015\Projects\cs2413\cs2413\Project7\Debug\Project7.exe
