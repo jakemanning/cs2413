@@ -72,7 +72,6 @@ public:
 	virtual void setIncFactor(int f);													// Resets the incedent factor to necessary size
 	void setCapacity(int c);															// Resizes underlying array to the specified capacit
 	bool contains(const DataType& i);													// Checks whether the vector contains a member of the specified dataType
-	ArrayClass<DataType>* underlyingArray();											// Returns the underlying ArrayClass
 };
 #pragma region array
 template <class DataType>
@@ -271,14 +270,6 @@ bool Vector<DataType>::contains(const DataType& var) {
 	}
 	return false;
 }
-template <class DataType>
-ArrayClass<DataType>* Vector<DataType>::underlyingArray() {
-	ArrayClass<DataType> *newArr = new ArrayClass<DataType>(_currSize, 0);
-	for (int i = 0; i < _currSize; ++i) {
-		(*newArr)[i] = paObject[i];
-	}
-	return _currSize != 0 ? newArr : NULL;
-}
 #pragma endregion Methods
 
 #pragma endregion Classes
@@ -313,9 +304,9 @@ public:
 	void preOrderChildrenTraversal(const int& parentValue);								// Traverses the tree in a recursive fashion: root, the left sub tree through the right subtree
 	void insertToTree(const int& parent, DT& children);									// Inserts nodes to the tree, starting from the parent, given the parentNode, from the left to the right and fills the childOrderArray
 	void printLevelByLevel();															// Prints level by level using a STL Queue
-	void insertSingleNode(const int& parent, const int& child);
-	void debug();
-	void clear();
+	void insertSingleNode(const int& parent, const int& child);							// Inserts a single node, with the child order after the last child
+	void debug();																		// Prints out the tree's underlying arrays
+	void clear();																		// Clears out the underlying arrays
 };
 template <class DT>
 ParentMultiTree<DT>::ParentMultiTree() {
@@ -576,6 +567,7 @@ void ParentMultiTree<DT>::printLevelByLevel() {
 
 		cout << element << " ";
 	}
+	cout << endl;
 }
 #pragma endregion Methods
 
@@ -583,21 +575,22 @@ void ParentMultiTree<DT>::printLevelByLevel() {
 template <class DT>
 class GraphAdjList {
 	template <class DT>
-	friend ostream& operator<< (ostream& s, GraphAdjList<DT>& graph);
+	friend ostream& operator<< (ostream& s, GraphAdjList<DT>& graph);					// Overloaded operator
+private:
+	void _setupForSearch();																// Clears out arrays preparing for search
+	void _dfs(int x);																	// Allows a recursive depth first search on 'x'
 protected:
-	ArrayClass<list<DT>*>* _adjList;
-	ArrayClass<bool>* _visited;
-	ParentMultiTree<ArrayClass<DT>>* _parentTree;
+	ArrayClass<list<DT>*>* _adjList;													// Adjacency list, an array of lists which contain each indexes neighbors
+	ArrayClass<bool>* _visited;															// An array of visited nodes
+	ParentMultiTree<ArrayClass<DT>>* _parentTree;										// Parent Array representation of the finished dfs and bfs traversals
 	int _numNodes;																		// Number of nodes
 	int _numEdges;																		// Number of edges
-	void _setupForSearch();
-	void _dfs(int x);
 public:
 	GraphAdjList(int numNodes, int numEdges);											// Initializer constructor, with numNodes and numEdges as input
 	~GraphAdjList();																	// Destructor, removes any unused memory
 	void addEdge(int x, int y);															// Adds a vertex between vertex 'x' and vertex 'y'
-	ParentMultiTree<ArrayClass<DT>>* dfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the depth first search tree
-	ParentMultiTree<ArrayClass<DT>>* bfs(int x);										// Where 'x' is the starting node and its output is a parent array which represents the breadth first search tree
+	ParentMultiTree<ArrayClass<DT>>* dfs(int x);										// Depth First Search, where 'x' is the starting node and its output is a parent array which represents the depth first search tree
+	ParentMultiTree<ArrayClass<DT>>* bfs(int x);										// Breadth First Search, where 'x' is the starting node and its output is a parent array which represents the breadth first search tree
 };
 template <class DT>
 GraphAdjList<DT>::GraphAdjList(int numNodes, int numEdges) {
@@ -617,6 +610,7 @@ GraphAdjList<DT>::~GraphAdjList() {
 }
 template <class DT>
 void GraphAdjList<DT>::addEdge(int x, int y) {
+	// Creates new list at specified index if not already a list
 	if ((*_adjList)[x] == NULL) {
 		(*_adjList)[x] = new list<DT>();
 	}
@@ -699,7 +693,7 @@ void GraphAdjList<DT>::_setupForSearch() {
 
 int main() {
 	int numNodes, numEdges;
-	int searchNode = 0;
+	int searchNode = 0; // Node that the search/traversal acts on
 	cin >> numNodes >> numEdges;
 	GraphAdjList<int> *myGraph = new GraphAdjList<int>(numNodes, numEdges);
 	for (int i = 0; i < numEdges; ++i) {
@@ -710,17 +704,15 @@ int main() {
 	cout << "Overloaded Operator - Graph:" << endl;
 	cout << (*myGraph) << endl;
 
-	cout << endl << "Depth First Search on " << searchNode << ":" << endl;
+	cout << endl << "Depth First Search on " << searchNode << ":" << endl << "Parent Multi Tree (Project6)" << endl;
 	ParentMultiTree<ArrayClass<int>>* dfsTest = (*myGraph).dfs(searchNode);
 	cout << (*dfsTest) << endl;
 	(*dfsTest).printLevelByLevel();
-	cout << endl;
 
-	cout << endl << "Breadth First Search on " << searchNode << ":" << endl;
+	cout << endl << "Breadth First Search on " << searchNode << ":" << endl << "Parent Multi Tree (Project 6)" << endl;
 	ParentMultiTree<ArrayClass<int>>* bfsTest = (*myGraph).bfs(searchNode);
 	cout << (*bfsTest) << endl;
 	(*bfsTest).printLevelByLevel();
-	cout << endl;
 
 	return 0;
 }
