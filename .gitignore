@@ -30,3 +30,4 @@
 *.suo
 *.VC.db
 *.VC.db-wal
+*.VC.db-shm
