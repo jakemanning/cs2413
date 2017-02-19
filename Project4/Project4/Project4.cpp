@@ -3,8 +3,6 @@ using namespace std;
 
 #pragma region Exceptions
 class Exception { };																	// Generic, all exceptions derive from this
-class IncorrectTab : public Exception { };												// In case the user asked for a browser tab that doesn't exist yet
-class IncorrectAction : public Exception { };											// In case the user asked for an action that won't work
 class ArrayException : public Exception { };											// Genric array exception, all array exceptions derive from
 class ArrayMemoryException : public ArrayException { };									// In case the array created causes an error
 class ArrayBoundsException : public ArrayException { };									// In case the user asked for an index that was out of bounds

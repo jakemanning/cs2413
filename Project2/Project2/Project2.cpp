@@ -151,8 +151,8 @@ Vector<DataType>::Vector(int n) : ArrayClass<DataType>(n) {
 	_incFactor = (n + 1) / 2; // Arbitrary
 }
 template <class DataType>
-Vector<DataType>::Vector(int n, DataType& val) : ArrayClass<DataType>(n, val) {
-	_currSize = 0;
+Vector<DataType>::Vector(int n, const DataType& val) : ArrayClass<DataType>(n, val) {
+	_currSize = n;
 	_incFactor = n / 2; // Arbitrary
 }
 template <class DataType>
